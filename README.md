@@ -9,6 +9,7 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Bizness.html    # Web application exploitation, SQL injection, and privilege escalation
 │   ├── HTB BoardLight.pdf  # Network enumeration, service exploitation, and lateral movement
 │   ├── HTB Broker.html     # Message broker exploitation, authentication bypass, and system compromise
+│   ├── HTB Cap.html        # Capability-based privilege escalation and container escape techniques
 │   └── HTB Codify.pdf      # Code execution vulnerabilities, sandbox escape, and root access
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
