@@ -6,12 +6,13 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 
 ```
 ├── Full writeups/          # Complete detailed penetration testing reports
-│   ├── HTB Bizness.html    # HackTheBox Bizness machine writeup
-│   ├── HTB BoardLight.pdf  # HackTheBox BoardLight machine writeup
-│   └── HTB Codify.pdf      # HackTheBox Codify machine writeup
+│   ├── HTB Bizness.html    # Web application exploitation, SQL injection, and privilege escalation
+│   ├── HTB BoardLight.pdf  # Network enumeration, service exploitation, and lateral movement
+│   ├── HTB Broker.html     # Message broker exploitation, authentication bypass, and system compromise
+│   └── HTB Codify.pdf      # Code execution vulnerabilities, sandbox escape, and root access
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
-│   ├── WT - HTB Alert.pdf  # HackTheBox Alert machine walkthrough
-│   └── WT - HTB Analytics.pdf # HackTheBox Analytics machine walkthrough
+│   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
+│   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution
 └── README.md              # This file
 ```
 

