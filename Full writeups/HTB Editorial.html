@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Editorial</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Editorial</h2>
+        <h3 class="report-meta">Date: January 28, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details a penetration test conducted on the HTB Editorial machine (10.10.11.20). The assessment uncovered a sophisticated chain of vulnerabilities, beginning with a Server-Side Request Forgery (SSRF) flaw in a public-facing file upload functionality. This SSRF was leveraged to access an internal API, which disclosed credentials for a developer account. Post-exploitation, analysis of an internal Git repository revealed credentials for a higher-privileged production account. Finally, a known vulnerability (CVE-2022-24439) in a script with sudo permissions was exploited to achieve root access, resulting in a full system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 critical vulnerabilities</strong> chained together for a full compromise.</li>
+            <li><strong>Complete system compromise</strong> from unauthenticated access to root.</li>
+            <li><strong>Server-Side Request Forgery (SSRF)</strong> in a web application's file upload feature.</li>
+            <li><strong>Information Disclosure</strong> via an internal API leaking developer credentials.</li>
+            <li><strong>Credential Exposure</strong> within Git commit history, revealing production-level credentials.</li>
+            <li><strong>Privilege Escalation</strong> via a command injection vulnerability (CVE-2022-24439) in a privileged Python script.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system exhibits a critical risk posture. The combination of an external SSRF vulnerability with internal information disclosure and a known command injection flaw in a sudo-privileged script creates a direct and highly effective path to complete system control for an external attacker.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.20</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.18</li>
+            <li><strong>Hostname:</strong> editorial.htb</li>
+            <li><strong>Operating System:</strong> Ubuntu 22.04.4 LTS</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A Server-Side Request Forgery (SSRF) vulnerability in the `/upload` page was used to scan the internal network and interact with a local API on port 5000. An API endpoint was discovered that leaked plaintext credentials for a `dev` user, which were then used to log in via SSH.</li>
+            <li><strong>Lateral Movement:</strong> As the `dev` user, an internal Git repository was discovered. Analysis of the commit history (`git log` and `git show`) revealed a commit where production credentials for the `prod` user were hardcoded before being replaced. These credentials were used to switch user to `prod`.</li>
+            <li><strong>Privilege Escalation:</strong> The `prod` user had sudo privileges to run a Python script that used the `GitPython` library. This library version was vulnerable to command injection (CVE-2022-24439). A malicious payload was passed as an argument to the script, which was executed as root, resulting in a root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Server-Side Request Forgery (SSRF) in Cover Upload</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.2<br>
+        <strong>CWE:</strong> CWE-918 (Server-Side Request Forgery)</p>
+        <p><strong>Description:</strong><br>
+        The web application at `http://editorial.htb/upload` allows users to submit a URL for a book cover. The server-side code fetches the content from this user-supplied URL without proper validation of the destination address. This allows an attacker to force the server to make requests to internal services that are not publicly accessible.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Parameter:</strong> `bookurl` in the POST request to `/upload-cover`.</li>
+            <li><strong>Exploitation Method:</strong> Using Burp Intruder to systematically send requests to `http://127.0.0.1:[PORT]` to discover internal services.</li>
+        </ul>
+        <p><strong>Impact:</strong> The SSRF vulnerability served as the initial point of entry, allowing for internal network reconnaissance and interaction with a vulnerable internal API, which led to the first credential compromise.</p>
+
+        <h3>Finding 2: Information Disclosure via Unauthenticated Internal API</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-200 (Exposure of Sensitive Information to an Unauthorized Actor)</p>
+        <p><strong>Description:</strong><br>
+        Using the SSRF vulnerability (Finding 1), an internal API was discovered on `127.0.0.1:5000`. One of the API endpoints, `/api/latest/metadata/messages/authors`, returned a JSON object containing a template welcome message. This message included hardcoded plaintext credentials for the `dev` user.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> `http://127.0.0.1:5000/api/latest/metadata/messages/authors`</li>
+            <li><strong>Information Disclosed:</strong> Hardcoded developer credentials.</li>
+            <li><strong>Credentials Found:</strong> `dev`:`dev080217_devAPI!@`</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability provided the attacker with valid SSH credentials, granting them initial shell access to the system as the `dev` user.</p>
+
+        <h3>Finding 3: Credential Exposure in Git Commit History</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.1<br>
+        <strong>CWE:</strong> CWE-552 (Files or Directories Accessible to External Parties)</p>
+        <p><strong>Description:</strong><br>
+        After gaining access as the `dev` user, a Git repository was found in the `~/apps` directory. A review of the commit history (`git log`) revealed a commit with the message "change(api): downgrading prod to dev". Inspecting this commit with `git show` showed that the developer had replaced hardcoded production credentials with developer credentials, leaving the production password exposed in the commit history.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Location:</strong> `~/apps/.git` repository.</li>
+            <li><strong>Commit ID:</strong> `b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae`</li>
+            <li><strong>Credentials Found:</strong> `prod`:`080217_Producti0n_2023!@`</li>
+        </ul>
+        <p><strong>Impact:</strong> The exposed credentials allowed for lateral movement from the low-privileged `dev` user to the `prod` user, who had sudo access, a critical step towards full system compromise.</p>
+
+        <h3>Finding 4: Privilege Escalation via GitPython RCE (CVE-2022-24439)</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-78 (Improper Neutralization of Special Elements used in an OS Command)</p>
+        <p><strong>Description:</strong><br>
+        The `prod` user has sudo permission to execute `/opt/internal_apps/clone_changes/clone_prod_change.py` as root. This script uses a vulnerable version of the `GitPython` library. The vulnerability, CVE-2022-24439, allows for remote command execution due to improper input validation in the `clone_from` function. An attacker can craft a malicious URL that, when passed as an argument to the script, will execute arbitrary shell commands.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Sudo rule for the `clone_prod_change.py` script.</li>
+            <li><strong>Vulnerable Library:</strong> `GitPython`</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>A reverse shell was obtained by executing the script with the following malicious argument:</p>
+        <pre><code>sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext::sh -c bash% /tmp/shell.sh'</code></pre>
+        <p><strong>Impact:</strong> This vulnerability provides a direct path for the `prod` user to escalate privileges to root, resulting in a complete compromise of the system's confidentiality, integrity, and availability.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified open ports 22 (SSH) and 80 (HTTP).</li>
+            <li><strong>Web Enumeration:</strong> Found an `/upload` page on the main website.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>SSRF Exploitation:</strong> Abused the "Cover URL" field to scan internal ports and identified an API on `127.0.0.1:5000`.</li>
+            <li><strong>Information Disclosure:</strong> Queried the internal API to leak developer credentials (`dev:dev080217_devAPI!@`).</li>
+            <li><strong>SSH Access:</strong> Successfully authenticated as `dev` via SSH.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Discovered a Git repository in `~/apps`.</li>
+            <li><strong>Credential Extraction:</strong> Analyzed `git log` and found a commit leaking production credentials (`prod:080217_Producti0n_2023!@`).</li>
+            <li><strong>Privilege Escalation:</strong> Used `su` to switch to the `prod` user.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation to Root</h3>
+        <ul>
+            <li><strong>Sudo Enumeration:</strong> Ran `sudo -l` to find the privileged Python script.</li>
+            <li><strong>Vulnerability Research:</strong> Identified the script's use of a vulnerable `GitPython` library (CVE-2022-24439).</li>
+            <li><strong>Command Injection:</strong> Exploited the vulnerability by passing a malicious URL to the script via `sudo`.</li>
+            <li><strong>Root Access:</strong> Received a reverse shell with root privileges.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
+|_http-title: Editorial Tiempo Arriba
+|_http-server-header: nginx/1.18.0 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Fix SSRF Vulnerability:</strong> Implement strict input validation on the `bookurl` parameter. Use an allow-list for permitted domains and protocols. Prevent the application from making requests to internal or loopback IP addresses.</li>
+            <li><strong>Patch Sudo-Privileged Script:</strong> Immediately update the `GitPython` library to a patched version (3.1.28 or later) to mitigate CVE-2022-24439. Better yet, rewrite the sudo rule to be more specific and avoid running complex, user-influenced scripts as root.</li>
+            <li><strong>Remove Hardcoded Credentials:</strong> Scrub the Git repository of all hardcoded credentials. Use a tool like `git-filter-repo` to remove them from the entire commit history. Implement a secure secrets management solution (e.g., Vault, environment variables) for storing all credentials.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Secure Internal APIs:</strong> All internal APIs, including the one on port 5000, must require authentication and authorization, even if they are not directly exposed to the internet.</li>
+            <li><strong>Credential Rotation:</strong> Immediately change all compromised passwords for the `dev` and `prod` accounts and conduct an audit for any other exposed secrets.</li>
+            <li><strong>Security Awareness Training:</strong> Train developers on the risks of hardcoding credentials in source code and committing them to version control.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/dev/user.txt</li>
+            <li><strong>Value:</strong> 52c1113d2407ab4ac1e25cf23f98d377</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> d2071bc6171a745371fc77bf6f0b057a</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>SSRF Vector:</strong> `bookurl` parameter in `/upload-cover`.</li>
+            <li><strong>Exposed Credentials:</strong> `dev:dev080217_devAPI!@`, `prod:080217_Producti0n_2023!@`</li>
+            <li><strong>Privilege Escalation CVE:</strong> CVE-2022-24439</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Editorial machine's security posture is critically flawed due to a cascade of interconnected vulnerabilities. An external-facing SSRF flaw provided the initial vector into the internal network, which should have been better segmented and protected. This was compounded by poor development practices, including hardcoding credentials in both an API response and Git history. The final step to full compromise was enabled by a misconfigured sudo rule that allowed a user to run a script containing a known, high-severity vulnerability. This engagement underscores the importance of a defense-in-depth security model, where a failure in one layer does not lead to a total system compromise.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The system is exposed to a complete takeover by an unauthenticated remote attacker. This could lead to the theft of sensitive author and publication data, service disruption, and the server being used as a pivot point for further attacks into the internal network.</p>
+        <p><strong>Technical Risk:</strong> The combination of SSRF, multiple instances of information disclosure, and a known RCE in a privileged script creates a reliable and repeatable path for an attacker to gain root access.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> January 28, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
