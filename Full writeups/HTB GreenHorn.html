@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - GreenHorn</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: GreenHorn</h2>
+        <h3 class="report-meta">Date: 16 January 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details a penetration test conducted on the HTB GreenHorn machine (10.10.11.25). The assessment uncovered a chain of vulnerabilities, beginning with the discovery of an administrator password hash for a Pluck CMS instance within a public Gitea repository. This allowed for authenticated remote code execution. Further lateral movement was achieved through password reuse. The final stage involved exploiting a misconfigured sudo rule for the OpenVAS utility to gain root privileges, facilitated by recovering a pixelated password from a shared PDF document using the Depix tool. [1, 5, 8, 9] This sequence of vulnerabilities led to a full system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 critical vulnerabilities</strong> chained for complete system compromise.</li>
+            <li><strong>Information Disclosure</strong> of a password hash in a public Gitea repository.</li>
+            <li><strong>Authenticated RCE</strong> in Pluck CMS via module installation.</li>
+            <li><strong>Password Reuse</strong> for lateral movement between user accounts.</li>
+            <li><strong>Privilege Escalation</strong> through a misconfigured sudo rule for OpenVAS, aided by password recovery from a pixelated image.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system is critically vulnerable due to a combination of information disclosure, weak credential practices, and a misconfigured administrative tool. The public exposure of sensitive information provides a direct path for an attacker to gain an initial foothold, with subsequent misconfigurations allowing for straightforward privilege escalation to root.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.25</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.8</li>
+            <li><strong>Hostname:</strong> greenhorn.htb</li>
+            <li><strong>Operating System:</strong> Ubuntu</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A public Gitea repository on port 3000 contained the SHA512 hash of the Pluck CMS administrator password. After cracking the hash, the credentials were used to log into the CMS. An authenticated Remote Code Execution (RCE) was then achieved by uploading a malicious module as a ZIP file.</li>
+            <li><strong>Lateral Movement:</strong> The cracked administrator password (`iloveyou1`) was reused to switch from the `www-data` user to the `junior` user.</li>
+            <li><strong>Privilege Escalation:</strong> The `junior` user had sudo privileges to run `/usr/sbin/openvas`. A PDF document found on the system contained a pixelated root password. The Depix tool was used to recover the password from the image. This password was then used with the `su` command to gain a root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Credential Exposure in Public Gitea Repository</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-552 (Files or Directories Accessible to External Parties)</p>
+        <p><strong>Description:</strong><br>
+        A Gitea instance running on port 3000 hosted a public repository named "GreenAdmin/GreenHorn". Within this repository, the file `data/settings/pass.php` contained a SHA512 hash for the Pluck CMS administrator password. This hash was cracked offline, revealing the password.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> `http://greenhorn.htb:3000/GreenAdmin/GreenHorn`</li>
+            <li><strong>Information Disclosed:</strong> SHA512 password hash.</li>
+            <li><strong>Cracked Password:</strong> `iloveyou1`</li>
+        </ul>
+        <p><strong>Impact:</strong> This information disclosure provided the necessary credentials to gain administrative access to the Pluck CMS, enabling the subsequent remote code execution attack.</p>
+
+        <h3>Finding 2: Authenticated RCE in Pluck CMS 4.7.18</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-434 (Unrestricted Upload of File with Dangerous Type)</p>
+        <p><strong>Description:</strong><br>
+        Pluck CMS version 4.7.18 allows authenticated administrators to install new modules by uploading a ZIP file. The application fails to properly validate the contents of the uploaded archive, allowing an attacker to upload a ZIP file containing a PHP web shell. Once installed, the shell can be accessed directly, leading to Remote Code Execution.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Function:</strong> Module installation via ZIP upload.</li>
+            <li><strong>Payload:</strong> A PHP reverse shell packaged within a ZIP file.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability allowed the attacker to transition from authenticated web access to a shell on the underlying server as the `www-data` user.</p>
+
+        <h3>Finding 3: Insecure Password Reuse</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-255 (Credentials Management)</p>
+        <p><strong>Description:</strong><br>
+        The password (`iloveyou1`) cracked from the Gitea repository was found to be reused for the system user `junior`. This insecure practice allowed the attacker to escalate their privileges from the low-privileged `www-data` account to the `junior` account using the `su` command.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Username:</strong> `junior`</li>
+            <li><strong>Reused Password:</strong> `iloveyou1`</li>
+        </ul>
+        <p><strong>Impact:</strong> Password reuse enabled straightforward lateral movement, granting the attacker access to an account with `sudo` capabilities, which was essential for the final privilege escalation stage.</p>
+
+        <h3>Finding 4: Privilege Escalation via OpenVAS and Depixelation</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-269 (Improper Privilege Management)</p>
+        <p><strong>Description:</strong><br>
+        The `junior` user had `sudo` privileges to run `/usr/sbin/openvas`. A document named "Using OpenVAS.pdf" was found on the system, which contained a screenshot of a terminal showing the root password, but the password was pixelated. The tool Depix was used to analyze the pixelated image and successfully recover the plaintext password. This password was then used with `su` to gain a root shell.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Sudoers configuration for `/usr/sbin/openvas` and insecure storage of sensitive information. [3]</li>
+            <li><strong>Password Recovery Tool:</strong> Depix. [1]</li>
+            <li><strong>Recovered Password:</strong> `sidefromsidetheothersidesidefromsidetheotherside`</li>
+        </ul>
+        <p><strong>Impact:</strong> The combination of a misconfigured sudo rule and the insecure sharing of a credential (even in a pixelated form) allowed for a full privilege escalation to root, leading to a complete compromise of the system.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Port Scanning:</strong> Identified a web server on port 80 (Pluck CMS) and a Gitea instance on port 3000.</li>
+            <li><strong>Repository Analysis:</strong> Discovered a public Gitea repository containing the source code and configuration for the Pluck CMS.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Credential Disclosure:</strong> Extracted a SHA512 hash from `pass.php` in the Gitea repository and cracked it to get the password `iloveyou1`.</li>
+            <li><strong>CMS Authentication:</strong> Logged into the Pluck CMS admin panel.</li>
+            <li><strong>Authenticated RCE:</strong> Uploaded and installed a malicious module containing a PHP reverse shell.</li>
+            <li><strong>Foothold Gained:</strong> Received a shell as the `www-data` user.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Password Reuse:</strong> Used the password `iloveyou1` to switch to the `junior` user via `su`.</li>
+            <li><strong>User Flag:</strong> Retrieved the user flag from `junior`'s home directory.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Found the "Using OpenVAS.pdf" document and a pixelated password image inside.</li>
+            <li><strong>Password Recovery:</strong> Used the Depix tool to recover the plaintext root password from the pixelated image.</li>
+            <li><strong>Root Access:</strong> Used the recovered password with `su root` to gain a root shell.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT     STATE SERVICE VERSION
+80/tcp   open  http    nginx 1.18.0 (Ubuntu)
+|_http-title: Welcome to GreenHorn!
+3000/tcp open  http    Gitea
+|_http-title: GreenHorn
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Secure Gitea Repository:</strong> Immediately make the "GreenAdmin/GreenHorn" repository private or remove it entirely. Sensitive information like password hashes should never be stored in publicly accessible version control systems.</li>
+            <li><strong>Credential Rotation:</strong> Change all compromised passwords, including the Pluck CMS admin password, the `junior` user's password, and the root password.</li>
+            <li><strong>Harden Sudo Rules:</strong> Remove the sudo rule for `openvas` for the `junior` user. Follow the principle of least privilege and only grant sudo access when absolutely necessary and for specific, non-interactive commands.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Update Pluck CMS:</strong> Update the Pluck CMS to the latest version to mitigate known vulnerabilities. Disable the module installation feature if it is not required.</li>
+            <li><strong>Enforce Strong Password Policies:</strong> Implement a policy that prohibits password reuse and mandates strong, unique passwords for all accounts.</li>
+            <li><strong>Security Awareness Training:</strong> Educate users on the dangers of sharing credentials, even in seemingly obscured forms like pixelated images.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/junior/user.txt</li>
+            <li><strong>Value:</strong> c234a9f4a3a615fe3b06d6d9d8fbd4a9</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 3961fef13692f3018341fa86e90e94a5</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>Compromised Hash (SHA512):</strong> d5443aef...7790163</li>
+            <li><strong>Cracked Passwords:</strong> `iloveyou1`, `sidefromsidetheothersidesidefromsidetheotherside`</li>
+            <li><strong>Vulnerable CMS:</strong> Pluck CMS 4.7.18</li>
+            <li><strong>Privilege Escalation Vector:</strong> Sudo rule for `openvas` and password recovery from a pixelated image.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The GreenHorn machine was compromised through a series of significant security oversights. The initial entry point was provided by poor secret management, with a critical password hash exposed in a public code repository. This was followed by a vulnerability in the web application that allowed for remote code execution. The path to full system control was further enabled by weak password practices (reuse) and a misunderstanding of the risks associated with sharing "obscured" information, which, when combined with a misconfigured sudo rule, led to a complete privilege escalation. This engagement highlights the critical need for secure coding practices, strong credential management, and a thorough understanding of the tools and permissions granted to users.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The public exposure of sensitive data and a direct path to full administrative control place the system at a high risk of data breach, service disruption, and being used as a pivot point for further attacks on the network.</p>
+        <p><strong>Technical Risk:</strong> A chain of easily exploitable, high-impact vulnerabilities creates a straightforward and reliable path for an unauthenticated attacker to gain root access to the system.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> 16 January 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
