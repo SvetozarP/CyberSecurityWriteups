@@ -18,7 +18,8 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Dog.html        # Web application exploitation, authentication bypass, and privilege escalation
 │   ├── HTB Editorial.html  # Web application exploitation, authentication bypass, and privilege escalation
 │   ├── HTB GreenHorn.html  # Penetration testing report for GreenHorn machine
-│   └── HTB Headless.html   # XSS exploitation, command injection, and privilege escalation via sudo path hijacking
+│   ├── HTB Headless.html   # Web application exploitation, authentication bypass, and privilege escalation
+│   └── HTB Instant.html    # Web application exploitation, authentication bypass, and privilege escalation
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution
