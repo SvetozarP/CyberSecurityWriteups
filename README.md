@@ -19,7 +19,8 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Editorial.html  # Web application exploitation, authentication bypass, and privilege escalation
 │   ├── HTB GreenHorn.html  # Penetration testing report for GreenHorn machine
 │   ├── HTB Headless.html   # Web application exploitation, authentication bypass, and privilege escalation
-│   └── HTB Instant.html    # Web application exploitation, authentication bypass, and privilege escalation
+│   ├── HTB Instant.html    # Web application exploitation, authentication bypass, and privilege escalation
+│   └── HTB Keeper.html     # Penetration testing report for Keeper machine
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution
