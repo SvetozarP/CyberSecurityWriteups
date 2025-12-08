@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - LinkVortex</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: LinkVortex</h2>
+        <h3 class="report-meta">Date: January 4, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report outlines the findings from a penetration test conducted on the HTB LinkVortex machine (10.10.11.47). The assessment identified a chain of high-risk vulnerabilities that permitted an unauthenticated attacker to achieve full system compromise. The attack path began with an information disclosure vulnerability in an exposed Git repository, leading to administrative access to a Ghost CMS instance. This access was then leveraged to exploit an arbitrary file read vulnerability (CVE-2023-40028). Further credential harvesting and a final privilege escalation via a misconfigured sudo rule led to full system control.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>4 high-risk vulnerabilities</strong> chained for full system access.</li>
+            <li><strong>Complete system compromise</strong> achieved, from unauthenticated to root.</li>
+            <li><strong>Information Disclosure</strong> via an exposed `.git` repository on a development subdomain.</li>
+            <li><strong>Arbitrary File Read (CVE-2023-40028)</strong> in Ghost CMS v5.58.</li>
+            <li><strong>Credential Exposure</strong> in a production configuration file.</li>
+            <li><strong>Privilege Escalation</strong> via a misconfigured `sudo` rule and symlink abuse.</li>
+        </ul>
+
+        <h3>Risk Level: HIGH</h3>
+        <p>The target system is highly vulnerable. A combination of insecure development practices, use of vulnerable software, and improper sudo configurations created a direct path for an external attacker to gain full administrative control of the system.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.47</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.253</li>
+            <li><strong>Hostnames:</strong> linkvortex.htb, dev.linkvortex.htb</li>
+            <li><strong>Operating System:</strong> Ubuntu 22.04.5 LTS</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A `dev` subdomain was discovered, which hosted an exposed `.git` repository. The repository was cloned, and analysis of test files revealed a password. This password was used to log into the Ghost CMS admin panel as the `admin` user.</li>
+            <li><strong>Lateral Movement:</strong> The Ghost version (5.58) was found to be vulnerable to an authenticated Arbitrary File Read (CVE-2023-40028). This was exploited to read `/var/lib/ghost/config.production.json`, which contained plaintext credentials for a mail service user, `bob`. These credentials were used to authenticate via SSH as `bob`.</li>
+            <li><strong>Privilege Escalation:</strong> The user `bob` had passwordless `sudo` privileges to run a specific script, `/opt/ghost/clean_symlink.sh`, with a `.png` file as an argument. The script was flawed; it checked for symlinks pointing to sensitive directories but did not validate the ultimate target of a chain of symlinks. A symlink `exp.png` was created pointing to `exp.txt`, which in turn pointed to `/root/root.txt`. When the script was run with the `CHECK_CONTENT=true` environment variable, it read and displayed the content of the root flag.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Exposed `.git` Repository on Development Subdomain</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.5<br>
+        <strong>CWE:</strong> CWE-552 (Files or Directories Accessible to External Parties)</p>
+        <p><strong>Description:</strong><br>
+        The `dev.linkvortex.htb` subdomain was discovered via subdomain enumeration. This host was found to have a publicly accessible `.git` directory in its web root. This allowed for the complete download of the application's source code and commit history using tools like `git-dumper`. Analysis of the downloaded files revealed hardcoded credentials in test scripts.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Endpoint:</strong> `http://dev.linkvortex.htb/.git/`</li>
+            <li><strong>Credential Found In:</strong> `ghost/core/test/regression/api/admin/authentication.test.js`</li>
+            <li><strong>Password Found:</strong> `OctopiFociPilfer45`</li>
+        </ul>
+        <p><strong>Impact:</strong> This misconfiguration exposed sensitive credentials, granting administrative access to the Ghost CMS and enabling the next stage of the attack.</p>
+
+        <h3>Finding 2: Authenticated Arbitrary File Read in Ghost CMS (CVE-2023-40028)</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.7<br>
+        <strong>CWE:</strong> CWE-22 (Improper Limitation of a Pathname to a Restricted Directory)</p>
+        <p><strong>Description:</strong><br>
+        The Ghost CMS version 5.58 is vulnerable to an authenticated arbitrary file read vulnerability. An attacker with administrative privileges (obtained in Finding 1) can exploit this flaw to read sensitive files from the server's filesystem. A public exploit script was used to gain a shell-like interface to read files.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Ghost CMS v5.58</li>
+            <li><strong>Exploited to Read:</strong> `/var/lib/ghost/config.production.json`</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability allowed the attacker to read the production configuration file, which contained plaintext credentials for the service user `bob`, facilitating lateral movement via SSH.</p>
+
+        <h3>Finding 3: Hardcoded Credentials in Configuration File</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-798 (Use of Hard-coded Credentials)</p>
+        <p><strong>Description:</strong><br>
+        The `config.production.json` file, read via the CVE-2023-40028 vulnerability, contained hardcoded plaintext credentials for an SMTP service. The password was found to be reused for the system user `bob`.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>File Location:</strong> `/var/lib/ghost/config.production.json`</li>
+            <li><strong>Credentials Found:</strong> `bob@linkvortex.htb`:`fibber-talented-worth`</li>
+        </ul>
+        <p><strong>Impact:</strong> The exposed credentials and password reuse allowed the attacker to move laterally from a web application context to a direct shell on the system as the user `bob`.</p>
+
+        <h3>Finding 4: Privilege Escalation via Sudo Symlink Abuse</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-59 (Improper Link Resolution Before File Access - 'Link Following')</p>
+        <p><strong>Description:</strong><br>
+        The user `bob` has `NOPASSWD` sudo privileges to execute the `/opt/ghost/clean_symlink.sh` script. The script is intended to clean up symbolic links, but it contains a logic flaw. While it checks if a symlink's immediate target is in a sensitive directory, it does not recursively check the target of a symlink chain. An attacker can create a "safe" symlink (`exp.png` -> `exp.txt`) and have the second link (`exp.txt`) point to a protected file (`/root/root.txt`). By running the script with the `CHECK_CONTENT=true` environment variable, the script follows the link chain and prints the contents of the root flag.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> `sudo` rule for `/opt/ghost/clean_symlink.sh`</li>
+            <li><strong>Exploitation:</strong>
+                <ol>
+                    <li>`ln -s /root/root.txt exp.txt`</li>
+                    <li>`ln -s /home/bob/exp.txt exp.png`</li>
+                    <li>`sudo CHECK_CONTENT=true /usr/bin/bash /opt/ghost/clean_symlink.sh exp.png`</li>
+                </ol>
+            </li>
+        </ul>
+        <p><strong>Impact:</strong> This misconfiguration allows a standard user to read arbitrary files as root, leading to a full system compromise.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Discovered HTTP on port 80 redirecting to `linkvortex.htb`.</li>
+            <li><strong>Subdomain Enumeration:</strong> Found the `dev.linkvortex.htb` subdomain.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Information Disclosure:</strong> Discovered and dumped an exposed `.git` repository on the `dev` subdomain.</li>
+            <li><strong>Credential Harvesting:</strong> Found the password `OctopiFociPilfer45` in the Git history.</li>
+            <li><strong>Web Panel Access:</strong> Logged into the Ghost admin panel at `linkvortex.htb/ghost/` as `admin` with the discovered password.</li>
+        </ul>
+        
+        <h3>Phase 3: Lateral Movement</h3>
+        <ul>
+            <li><strong>Vulnerability Exploitation:</strong> Used an exploit for CVE-2023-40028 to read `/var/lib/ghost/config.production.json`.</li>
+            <li><strong>Credential Extraction:</strong> Found the credentials `bob`:`fibber-talented-worth` in the config file.</li>
+            <li><strong>SSH Access:</strong> Logged in as `bob` via SSH.</li>
+        </ul>
+
+        <h3>Phase 4: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Sudo Enumeration:</strong> Ran `sudo -l` to discover the privileged `clean_symlink.sh` script.</li>
+            <li><strong>Symlink Abuse:</strong> Created a symlink chain pointing to `/root/root.txt`.</li>
+            <li><strong>Root Access:</strong> Executed the sudo command with a special environment variable to read and display the root flag.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.10
+80/tcp open  http    Apache httpd
+|_http-title: Did not follow redirect to http://linkvortex.htb</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Fix Sudo Script Logic:</strong> The `clean_symlink.sh` script must be rewritten to properly and recursively resolve symbolic links before acting on them (e.g., using `readlink -f`). Better yet, avoid granting sudo access to complex custom scripts.</li>
+            <li><strong>Remove Exposed Git Repository:</strong> The `.git` directory must be removed from the `dev.linkvortex.htb` web root immediately. Web servers should never serve version control directories.</li>
+            <li><strong>Update Ghost CMS:</strong> Update the Ghost installation to the latest version to patch CVE-2023-40028 and other potential vulnerabilities.</li>
+            <li><strong>Scrub and Rotate Credentials:</strong> Remove all hardcoded credentials from the Git history using a tool like `git-filter-repo`. Immediately change all compromised passwords (`admin`, `bob`, etc.). Implement a secrets management solution instead of storing passwords in test files or configuration files.</li>
+            <li><strong>Principle of Least Privilege:</strong> The `bob` user should not have passwordless `sudo` access to this script. Review all sudo rules to ensure they are necessary and securely implemented.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/bob/user.txt</li>
+            <li><strong>Value:</strong> b4dd5254646cbd9db3dc250907a76629</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt (read via exploit)</li>
+            <li><strong>Value:</strong> 3d1f91a5fed1f67b0479ce22c83c6e8d</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>Initial Password:</strong> `OctopiFociPilfer45`</li>
+            <li><strong>User Password:</strong> `fibber-talented-worth`</li>
+            <li><strong>Ghost Vulnerability:</strong> CVE-2023-40028</li>
+            <li><strong>Privilege Escalation Vector:</strong> Sudo rule for `clean_symlink.sh`</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The LinkVortex machine was found to be highly insecure due to a chain of high-severity vulnerabilities, originating from poor development and deployment practices. The exposure of a `.git` repository on a development server was the critical first mistake, providing the attacker with the necessary information to compromise the production web application. This was followed by the use of a vulnerable version of Ghost CMS and the insecure practice of storing credentials in plaintext within a configuration file. The final stage of the attack exploited a poorly written, privileged script, demonstrating a lack of secure coding and system administration. This engagement highlights how a single misconfiguration in a non-production environment can lead to a full compromise of the production system.</p>
+        
+        <p><strong>Business Risk:</strong> HIGH - A misconfiguration on a development server led directly to the full administrative compromise of the production environment. This could result in a total loss of data confidentiality and integrity, service disruption, and significant reputational damage.</p>
+        <p><strong>Technical Risk:</strong> The combination of information disclosure, an unpatched application vulnerability, and a flawed sudo policy created a clear and repeatable path for an attacker to achieve root access.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> January 4, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
