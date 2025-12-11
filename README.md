@@ -23,7 +23,8 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Keeper.html     # Penetration testing report for Keeper machine
 │   ├── HTB Lame.html       # Samba exploitation, remote code execution, and privilege escalation
 │   ├── HTB LinkVortex.html # Exposed Git repository, Ghost CMS vulnerability (CVE-2023-40028), and privilege escalation
-│   └── HTB Nocturnal.html  # Local File Inclusion (LFI) with null byte bypass, credential disclosure, and ISPConfig RCE (CVE-2023-46818) privilege escalation
+│   ├── HTB Nocturnal.html  # Local File Inclusion (LFI) with null byte bypass, credential disclosure, and ISPConfig RCE (CVE-2023-46818) privilege escalation
+│   └── HTB Perfection.html # Server-Side Template Injection (SSTI) in Ruby ERB leading to RCE, password hash cracking with disclosed schema, and excessive sudo privileges
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution
