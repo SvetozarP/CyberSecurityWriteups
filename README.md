@@ -6,25 +6,26 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 
 ```
 ├── Full writeups/          # Complete detailed penetration testing reports
-│   ├── HTB Bizness.html    # Web application exploitation, SQL injection, and privilege escalation
+│   ├── HTB Bizness.html    # Apache OFBiz RCE (CVE-2023-49070), weak SHA-1 password hashing, and password reuse for root access
 │   ├── HTB BoardLight.pdf  # Network enumeration, service exploitation, and lateral movement
-│   ├── HTB Broker.html     # Message broker exploitation, authentication bypass, and system compromise
-│   ├── HTB Cap.html        # Capability-based privilege escalation and container escape techniques
-│   ├── HTB Chemistry.html  # Web application vulnerabilities, authentication bypass, and privilege escalation
-│   ├── HTB Code.html       # Code execution vulnerabilities, authentication bypass, and privilege escalation
+│   ├── HTB Broker.html     # Apache ActiveMQ RCE (CVE-2023-46604), NGINX configuration abuse for file upload, and SSH key injection to root
+│   ├── HTB Cap.html        # IDOR leading to PCAP file download, credential exposure in network captures, and CVE-2021-4034 (PwnKit) privilege escalation
+│   ├── HTB Chemistry.html  # RCE via malicious .cif file upload exploiting Python sandbox escape, MD5 hash cracking from SQLite database, and path traversal in aiohttp service
+│   ├── HTB Code.html       # Python sandbox escape in web code editor, SQLite password hash cracking, and backup utility symlink manipulation for root access
 │   ├── HTB Codify.pdf      # Code execution vulnerabilities, sandbox escape, and root access
-│   ├── HTB CozyHosting.html # Hosting platform exploitation, authentication bypass, and privilege escalation
-│   ├── HTB Devvortex.html  # Web application exploitation, API vulnerabilities, and privilege escalation
-│   ├── HTB Dog.html        # Web application exploitation, authentication bypass, and privilege escalation
-│   ├── HTB Editorial.html  # Web application exploitation, authentication bypass, and privilege escalation
-│   ├── HTB GreenHorn.html  # Penetration testing report for GreenHorn machine
-│   ├── HTB Headless.html   # Web application exploitation, authentication bypass, and privilege escalation
-│   ├── HTB Instant.html    # Web application exploitation, authentication bypass, and privilege escalation
-│   ├── HTB Keeper.html     # Penetration testing report for Keeper machine
-│   ├── HTB Lame.html       # Samba exploitation, remote code execution, and privilege escalation
-│   ├── HTB LinkVortex.html # Exposed Git repository, Ghost CMS vulnerability (CVE-2023-40028), and privilege escalation
-│   ├── HTB Nocturnal.html  # Local File Inclusion (LFI) with null byte bypass, credential disclosure, and ISPConfig RCE (CVE-2023-46818) privilege escalation
-│   └── HTB Perfection.html # Server-Side Template Injection (SSTI) in Ruby ERB leading to RCE, password hash cracking with disclosed schema, and excessive sudo privileges
+│   ├── HTB CozyHosting.html # Spring Boot Actuator information disclosure, command injection in admin panel, hardcoded database credentials, and sudo SSH LocalCommand abuse
+│   ├── HTB Devvortex.html  # Joomla information disclosure (CVE-2023-23752), RCE via template modification, password hash cracking, and CVE-2023-1326 (apport-cli) privilege escalation
+│   ├── HTB Dog.html        # Exposed .git repository leading to credential disclosure, Backdrop CMS authenticated RCE, password reuse, and command injection in sudo utility
+│   ├── HTB Editorial.html  # SSRF in file upload feature, internal API credential disclosure, Git commit history exposure, and CVE-2022-24439 (GitPython) command injection
+│   ├── HTB GreenHorn.html  # Gitea repository credential exposure, Pluck CMS authenticated RCE via module upload, password reuse, and OpenVAS sudo abuse with Depix password recovery
+│   ├── HTB Headless.html   # XSS in User-Agent header for session hijacking, command injection in admin dashboard, and sudo path hijacking via syscheck script
+│   ├── HTB Instant.html    # Hardcoded admin JWT in Android APK, authenticated LFI in API endpoint for SSH key theft, and Solar-PuTTY backup file decryption
+│   ├── HTB Keeper.html     # Default Request Tracker credentials, KeePass master password recovery (CVE-2023-32784) from memory dump, and root SSH key stored in database
+│   ├── HTB Lame.html       # Multiple exploitation vectors: vsftpd v2.3.4 backdoor (CVE-2011-2523), distccd command execution (CVE-2004-2687), and Samba usermap_script RCE (CVE-2007-2447)
+│   ├── HTB LinkVortex.html # Exposed .git repository on dev subdomain, Ghost CMS arbitrary file read (CVE-2023-40028), credential exposure, and sudo symlink chain bypass
+│   ├── HTB Nocturnal.html  # Local File Inclusion (LFI) with null byte bypass, credential disclosure, password reuse, and ISPConfig authenticated RCE (CVE-2023-46818) privilege escalation
+│   ├── HTB Perfection.html # Server-Side Template Injection (SSTI) in Ruby ERB leading to RCE, password hash cracking with disclosed schema, and excessive sudo privileges
+│   └── HTB PermX.html      # Chamilo LMS unauthenticated RCE (CVE-2023-4220), credential exposure and reuse, and privilege escalation via sudo script symlink bypass
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution
