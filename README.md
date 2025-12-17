@@ -26,7 +26,8 @@ A comprehensive collection of penetration testing reports and walkthroughs from 
 │   ├── HTB Nocturnal.html  # Local File Inclusion (LFI) with null byte bypass, credential disclosure, password reuse, and ISPConfig authenticated RCE (CVE-2023-46818) privilege escalation
 │   ├── HTB Perfection.html # Server-Side Template Injection (SSTI) in Ruby ERB leading to RCE, password hash cracking with disclosed schema, and excessive sudo privileges
 │   ├── HTB PermX.html      # Chamilo LMS unauthenticated RCE (CVE-2023-4220), credential exposure and reuse, and privilege escalation via sudo script symlink bypass
-│   └── HTB Pilgrimage.html # Exposed .git repository leading to source code disclosure, ImageMagick RCE via EXIF injection, and privilege escalation via Binwalk RCE (CVE-2022-4510) triggered by cron job
+│   ├── HTB Pilgrimage.html # Exposed .git repository leading to source code disclosure, ImageMagick RCE via EXIF injection, and privilege escalation via Binwalk RCE (CVE-2022-4510) triggered by cron job
+│   └── HTB Planning.html   # Grafana Arbitrary File Read (CVE-2024-9264) leading to credential disclosure, password reuse for SSH access, and privilege escalation via insecure cron job manager
 ├── Walkthroughs/           # Step-by-step walkthroughs and guides
 │   ├── WT - HTB Alert.pdf  # Quick reference for Alert machine exploitation techniques
 │   └── WT - HTB Analytics.pdf # Step-by-step guide for Analytics machine solution

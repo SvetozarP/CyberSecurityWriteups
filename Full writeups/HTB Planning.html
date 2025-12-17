@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing Report - Planning</title>
+    <style>
+        /* --- Universal Styles for Screen and Print --- */
+        body {
+            background-color: #0a4b63; /* Dark Teal Background */
+            color: #f0f0f0; /* Off-white text for readability */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background-color: #0c5975;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1, h2, h3, h4 {
+            color: #ffffff;
+            border-bottom: 1px solid #2a9d8f;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            padding: 20px 0;
+            border-top: 3px solid #93c47d; /* Green accent line */
+            border-bottom: 3px solid #93c47d; /* Green accent line */
+            margin-bottom: 5px;
+        }
+        h2.subtitle {
+             text-align: center;
+             font-size: 1.8em;
+             border: none;
+             margin-top: 0;
+             margin-bottom: 5px;
+        }
+        h3.report-meta {
+            text-align: center;
+            font-size: 1.2em;
+            border: none;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #2a9d8f;
+            margin: 30px 0;
+        }
+        .confidential {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidential strong {
+            font-size: 1.1em;
+        }
+        .confidential em {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #93c47d; /* Green accent for links */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #1a7469;
+        }
+        thead {
+            background-color: #93c47d; /* Green accent for table headers */
+            color: #0a4b63;
+            /* ** Crucial for forcing background colors in print ** */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        thead th {
+             font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #0a4b63; /* Striped rows */
+        }
+        pre {
+            background-color: #002b36; /* Darker background for code */
+            color: #cddc39; /* Lime green text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #1a7469;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+             text-align: center;
+             margin-top: 40px;
+             font-style: italic;
+             color: #cccccc;
+        }
+        
+        /* This rule helps control the margins set by the browser's print function */
+        @page {
+            margin: 0.75in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>CAPTURE THE FLAG PENETRATION TESTING</h1>
+        <h2 class="subtitle">Report of Findings: Planning</h2>
+        <h3 class="report-meta">Date: May 16, 2025</h3>
+        <h3 class="report-meta">Version: 1.0</h3>
+
+        <div class="confidential">
+            <strong>CONFIDENTIAL</strong><br>
+            <em>For educational and training purposes only</em>
+        </div>
+
+        <hr>
+        
+        <h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+        <ol>
+            <li><a href="#executive-summary">Executive Summary</a></li>
+            <li><a href="#technical-summary">Technical Summary</a></li>
+            <li><a href="#detailed-findings">Detailed Technical Findings</a></li>
+            <li><a href="#attack-timeline">Attack Timeline</a></li>
+            <li><a href="#port-scan">Port Scan Results</a></li>
+            <li><a href="#remediation">Remediation Recommendations</a></li>
+            <li><a href="#evidence">Evidence Files</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+        <p>This report details a penetration test on the HTB Planning machine (10.10.11.68). The assessment uncovered a chain of high-risk vulnerabilities that enabled a full system compromise. The attack path began with the discovery of a Grafana subdomain, which was vulnerable to an Arbitrary File Read (AFR) flaw (CVE-2024-9264). This was exploited to read environment variables and configuration files, leaking multiple sets of credentials. These credentials allowed for lateral movement to a user shell via SSH. Finally, privilege escalation was achieved by exploiting an insecure, internally-facing web application for managing cron jobs, which allowed for the creation of a root-level reverse shell.</p>
+        
+        <h3>Key Findings Summary</h3>
+        <ul>
+            <li><strong>3 high-risk vulnerabilities</strong> chained for complete system compromise.</li>
+            <li><strong>Arbitrary File Read in Grafana (CVE-2024-9264)</strong> leading to credential disclosure.</li>
+            <li><strong>Credential Exposure</strong> in environment variables and configuration files.</li>
+            <li><strong>Privilege Escalation</strong> via an insecure internal web application for cron job management.</li>
+        </ul>
+
+        <h3>Risk Level: HIGH</h3>
+        <p>The system is exposed to a high risk of compromise. The combination of a public-facing vulnerability on an unpatched application, insecure credential storage practices, and a poorly secured internal tool provides a clear and effective path for an external attacker to gain full administrative control.</p>
+
+        <hr>
+
+        <h2 id="technical-summary">TECHNICAL SUMMARY</h2>
+        
+        <h3>Target Information</h3>
+        <ul>
+            <li><strong>Target IP:</strong> 10.10.11.68</li>
+            <li><strong>Hostnames:</strong> planning.htb, grafana.planning.htb</li>
+            <li><strong>Operating System:</strong> Ubuntu Linux</li>
+        </ul>
+
+        <h3>Attack Vector Summary</h3>
+        <ol>
+            <li><strong>Initial Foothold:</strong> An Arbitrary File Read vulnerability in Grafana (CVE-2024-9264) on a subdomain was exploited to read environment variables, exposing the Grafana admin credentials.</li>
+            <li><strong>Lateral Movement:</strong> The same Grafana file read vulnerability was then used with admin credentials to read a configuration file containing a `bind_password`. This password was reused for the system user `enzo`, allowing for SSH access.</li>
+            <li><strong>Privilege Escalation:</strong> As the user `enzo`, an internal cron job management web application on port 8080 was discovered. This application lacked authentication, allowing for the creation of a new cron job. A reverse shell payload was added as a cron job, which executed with root privileges, granting a root shell.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="detailed-findings">DETAILED TECHNICAL FINDINGS</h2>
+
+        <h3>Finding 1: Grafana Arbitrary File Read (CVE-2024-9264)</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.6<br>
+        <strong>CWE:</strong> CWE-22 (Improper Limitation of a Pathname to a Restricted Directory)</p>
+        <p><strong>Description:</strong><br>
+        The Grafana instance running on the `grafana.planning.htb` subdomain was found to be vulnerable to CVE-2024-9264. This is an Arbitrary File Read vulnerability that can be exploited by an unauthenticated attacker to read sensitive files from the server's filesystem by manipulating the `plugin_id` parameter. The vulnerability was first used to read `/proc/self/environ` to dump the environment variables of the Grafana process.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Service:</strong> Grafana</li>
+            <li><strong>Exploitation:</strong> A public exploit script was used to automate the file reading process.</li>
+            <li><strong>Information Disclosed:</strong> This initially revealed Grafana admin credentials: `enzo`:`IdoNotKnowThisPassword!`.</li>
+        </ul>
+        <p><strong>Impact:</strong> This vulnerability served as the primary entry point, providing the means to extract multiple sets of credentials and ultimately gain user-level access to the system.</p>
+
+        <h3>Finding 2: Insecure Credential Storage and Reuse</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 7.8<br>
+        <strong>CWE:</strong> CWE-255 (Credentials Management)</p>
+        <p><strong>Description:</strong><br>
+        Multiple instances of poor credential management were observed. First, the Grafana administrator password was stored in a plaintext environment variable. Second, after gaining administrative access to Grafana, the file read vulnerability (Finding 1) was leveraged again to read a configuration file containing a `bind_password`. This password (`eitheryougotit!;oryoudont!`) was found to be reused for the system user `enzo`, allowing for lateral movement via SSH.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Exposed Credentials:</strong>
+                <ol>
+                    <li>Grafana Admin: `enzo`:`IdoNotKnowThisPassword!` (from environment variables)</li>
+                    <li>System User: `enzo`:`eitheryougotit!;oryoudont!` (from config file, reused for SSH)</li>
+                </ol>
+            </li>
+        </ul>
+        <p><strong>Impact:</strong> Insecure storage and password reuse provided a direct path from an initial web vulnerability to an interactive shell on the system, which was critical for the final privilege escalation stage.</p>
+
+        <h3>Finding 3: Privilege Escalation via Insecure Cron Job Manager</h3>
+        <p><strong>Severity:</strong> HIGH<br>
+        <strong>CVSS Score:</strong> 8.8<br>
+        <strong>CWE:</strong> CWE-269 (Improper Privilege Management)</p>
+        <p><strong>Description:</strong><br>
+        After gaining access as the user `enzo`, an internal web service was discovered listening on `127.0.0.1:8080`. This application was identified as a "Cronjobs" manager. The application completely lacked authentication and authorization, allowing any user who could access it to create, view, and delete system-wide cron jobs. Since the cron service runs as root, any new job added through this interface would also execute as root. This was abused to create a new cron job that executed a reverse shell payload.</p>
+        <p><strong>Technical Details:</strong></p>
+        <ul>
+            <li><strong>Vulnerable Component:</strong> Internal cron job management web application on port 8080.</li>
+            <li><strong>Exploitation:</strong> Used SSH local port forwarding (`ssh -L`) to access the internal service, then used the web UI to add a reverse shell command to the crontab.</li>
+        </ul>
+        <p><strong>Impact:</strong> This insecure internal application provided a direct and trivial path for a low-privileged user to escalate to root, resulting in a full compromise of the system.</p>
+
+        <hr>
+
+        <h2 id="attack-timeline">ATTACK TIMELINE</h2>
+        
+        <h3>Phase 1: Reconnaissance</h3>
+        <ul>
+            <li><strong>Scanning:</strong> Identified SSH on port 22 and HTTP on port 80.</li>
+            <li><strong>Subdomain Enumeration:</strong> `ffuf` discovered the `grafana.planning.htb` subdomain.</li>
+        </ul>
+
+        <h3>Phase 2: Initial Foothold and Lateral Movement</h3>
+        <ul>
+            <li><strong>Vulnerability Exploitation:</strong> Exploited CVE-2024-9264 in Grafana to read environment variables and obtain admin credentials.</li>
+            <li><strong>Credential Harvesting:</strong> Used the Grafana admin access and the same vulnerability to read a configuration file, revealing the SSH password for the user `enzo`.</li>
+            <li><strong>User Access:</strong> Logged in as `enzo` via SSH and retrieved the user flag.</li>
+        </ul>
+        
+        <h3>Phase 3: Privilege Escalation</h3>
+        <ul>
+            <li><strong>Internal Enumeration:</strong> Scanned localhost and discovered the cron job management application on port 8080.</li>
+            <li><strong>Port Forwarding:</strong> Used SSH to forward the internal port 8080 to the attacker's machine.</li>
+            <li><strong>Insecure Application Abuse:</strong> Accessed the web interface and added a new cron job with a reverse shell payload.</li>
+            <li><strong>Root Access:</strong> Waited for the cron job to execute and received a root shell.</li>
+        </ul>
+
+        <hr>
+        
+        <h2 id="port-scan">PORT SCAN RESULTS</h2>
+        <h3>TCP Port Scan</h3>
+        <pre><code>PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.10
+80/tcp open  http    nginx 1.24.0 (Ubuntu)</code></pre>
+
+        <hr>
+        
+        <h2 id="remediation">REMEDIATION RECOMMENDATIONS</h2>
+        
+        <h3>HIGH PRIORITY</h3>
+        <ol>
+            <li><strong>Patch Grafana:</strong> Immediately update the Grafana instance to the latest version to mitigate CVE-2024-9264 and other known vulnerabilities.</li>
+            <li><strong>Secure Internal Applications:</strong> The internal cron job management application on port 8080 must be secured. It should require strong authentication and authorization, ensuring that only privileged users (i.e., root) can create or modify system-wide cron jobs.</li>
+            <li><strong>Implement Secrets Management:</strong> Cease storing sensitive credentials like passwords in plaintext environment variables or configuration files. Utilize a dedicated secrets management solution such as HashiCorp Vault or a cloud provider's equivalent.</li>
+        </ol>
+
+        <h3>MEDIUM PRIORITY</h3>
+        <ol>
+            <li><strong>Enforce Password Policies:</strong> Implement and enforce a strict password policy that prohibits password reuse between different applications, services, and system accounts. All compromised passwords should be rotated immediately.</li>
+            <li><strong>Network Segmentation:</strong> Restrict access to internal management applications. The cron job manager on port 8080 should not be accessible from user-level accounts like `enzo`.</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="evidence">EVIDENCE FILES</h2>
+        
+        <h3>User Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /home/enzo/user.txt</li>
+            <li><strong>Value:</strong> 11b81fb94e301d4c8a9ef69aef0e995</li>
+        </ul>
+
+        <h3>Root Flag</h3>
+        <ul>
+            <li><strong>Location:</strong> /root/root.txt</li>
+            <li><strong>Value:</strong> 7b7cae778a7c9b2b2a8c588e4f38f3cd</li>
+        </ul>
+
+        <h3>Key Artifacts</h3>
+        <ul>
+            <li><strong>Grafana Vulnerability:</strong> CVE-2024-9264</li>
+            <li><strong>Compromised Passwords:</strong> `IdoNotKnowThisPassword!`, `eitheryougotit!;oryoudont!`</li>
+            <li><strong>Privilege Escalation Vector:</strong> Unauthenticated cron job manager on port 8080.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="conclusion">CONCLUSION</h2>
+        <p>The Planning machine was compromised due to a series of high-risk vulnerabilities that illustrate a failure in multiple layers of security. The initial point of entry was a known, unpatched vulnerability in a public-facing application. This was compounded by poor secrets management, with critical passwords stored in easily accessible locations. The final escalation path was provided by a completely insecure internal tool that granted direct control over a privileged system function. This engagement underscores the importance of a comprehensive security strategy that includes timely patch management, secure handling of credentials, and the principle of least privilege for all internal services and user accounts.</p>
+        
+        <p><strong>Business Risk:</strong> HIGH - A public-facing software vulnerability provides a direct path for an attacker to gain access to internal systems and escalate privileges to root. This creates a high risk of a complete data breach, service disruption, and loss of system integrity.</p>
+        <p><strong>Technical Risk:</strong> The combination of an unpatched application, insecure credential storage, and an unprotected internal management tool creates a reliable and straightforward path to full system compromise.</p>
+        
+        <hr>
+
+        <div class="footer">
+            <p><strong>Report prepared by:</strong> Security Assessment Team<br>
+            <strong>Date:</strong> May 16, 2025</p>
+            <p>CONFIDENTIAL - For educational purposes only</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
